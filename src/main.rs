@@ -1,10 +1,11 @@
 use std::collections::HashMap;
-use std::fmt::{Debug, Display, Formatter};
+use std::fmt::{Debug, Display, format, Formatter};
 use std::fs;
 use std::fs::{File, OpenOptions};
 use std::io::{Read, Write};
 use serde::{Serialize, Deserialize};
 use serde_json::Deserializer;
+use serde_json::Value::String;
 
 trait Response<Res> {}
 
@@ -36,7 +37,7 @@ impl Display for PointRequest {
 fn point_consumer(point: &PointRequest) {}
 
 struct ContextHandler {
-    handlers: HashMap<String, String>,
+    handlers: HashMap<std::string::String, Box<dyn Fn(&str) -> std::string::String>>,
 }
 
 impl ContextHandler {
@@ -56,7 +57,6 @@ impl ContextHandler {
             return instance;
         };
         return l;
-        // self.handlers.insert("Point")
     }
     fn register<'a, Req, Res>(&mut self, callback: impl Fn(Req) -> Res)
         where Res: Response<Req>,
@@ -67,16 +67,21 @@ impl ContextHandler {
         let res_name = std::any::type_name::<Res>();
         println!("req_name={req_name}");
         println!("res_name={res_name}");
-        let l = |key: &str, payload: &'a str| -> String {
+
+        let l = |payload: &'a str| -> std::string::String {
             let req: Req = serde_json::from_str(payload).unwrap();
-            let res = callback(req);
-            let res_json = serde_json::to_string(&res).unwrap();
+            // let res = callback(req);
+            // let res_json = serde_json::to_string(&res).unwrap();
+            let res_json = std::string::String::new();
             return res_json;
         };
+        let key = format!("{req_name}-{res_name}");
+        let bo = Box::new(l);
+        // self.handlers.insert(key, bo);
     }
 
-    fn dispatch(&self, key: &str, payload: &str) -> String {
-        return String::new();
+    fn dispatch(&self, key: &str, payload: &str) -> std::string::String {
+        return std::string::String::new();
     }
 }
 
