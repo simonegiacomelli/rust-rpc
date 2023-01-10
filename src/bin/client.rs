@@ -1,8 +1,5 @@
-
-// use crate::response::{PointRequest, PointResponse};
-
-use rust_rpc::rpc::add;
+use rust_rpc::proxy::Proxy;
 
 fn main() {
-    add(1,2);
+    let proxy = Proxy::new();
 }
