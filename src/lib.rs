@@ -3,12 +3,9 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
-use response::Response;
+use rpc::Response;
 
 pub mod rpc;
-pub mod response;
-pub mod api_point;
-
 
 
 pub struct ContextHandler {

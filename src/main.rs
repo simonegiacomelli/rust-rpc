@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 use rust_rpc::ContextHandler;
-use rust_rpc::response::{PointRequest, PointResponse};
+use rust_rpc::rpc::api_point::{PointRequest, PointResponse};
 
 
 
