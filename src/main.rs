@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
-use rust_rpc::ContextHandler;
+use rust_rpc::rpc::ContextHandler;
 use rust_rpc::rpc::api_point::{PointRequest, PointResponse};
 
 
