@@ -1,5 +1,8 @@
-use lib;
+
+// use crate::response::{PointRequest, PointResponse};
+
+use rust_rpc::rpc::add;
 
 fn main() {
-    println!("I'm client")
+    add(1,2);
 }
