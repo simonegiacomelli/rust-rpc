@@ -14,7 +14,6 @@ fn main() {
     let mut context_handler = ContextHandler::new();
     context_handler.register(|p: PointRequest| -> PointResponse {
         PointResponse { sum: p.x + p.y }
-        // Foo { sum: p.x + p.y }
     });
 
     // let aftermath = context_handler.dispatch2(

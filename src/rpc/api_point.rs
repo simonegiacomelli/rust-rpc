@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
-use crate::rpc::Response;
 
+use crate::rpc::Request;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PointRequest {
@@ -14,4 +14,5 @@ pub struct PointResponse {
     pub sum: i32,
 }
 
-impl Response<PointRequest> for PointResponse {}
+
+impl Request<PointResponse> for PointRequest {}
