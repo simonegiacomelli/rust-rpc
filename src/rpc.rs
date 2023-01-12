@@ -51,8 +51,8 @@ impl ContextHandler {
         }));
     }
 
-    pub fn dispatch2(&self, req_string: &str) -> String {
-        let p = Payload::from(req_string);
+    pub fn dispatch(&self, request_payload: &str) -> String {
+        let p = Payload::from(request_payload);
         let x = self.handlers.get(p.handler_key).unwrap();
         x(p.json)
     }
