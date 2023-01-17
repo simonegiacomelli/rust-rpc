@@ -21,11 +21,11 @@ type Result<T> = std::result::Result<T, GenericError>;
 
 const blob_store_folder: &str = "./data/blob-store";
 
-async fn webserver_start(addr: SocketAddr, callback: String) -> Result<()> {
+async fn webserver_start(addr: SocketAddr, s: String, callback: fn(HttpRequest) -> HttpResponse) -> Result<()> {
     let service2 = service_fn(|req: Request<IncomingBody>| {
-        println!("{}", callback);
+        println!("{}", s);
 
-        web_handler3(&callback)
+        web_handler3(&s , &callback)
     });
     let service = service_fn(move |req| web_handler(req));
 
@@ -77,7 +77,7 @@ async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
     Ok(response)
 }
 
-async fn web_handler3(callback: &String) -> Result<Response<BoxBody>> {
+async fn web_handler3(callback: &String, x: &fn(HttpRequest) -> HttpResponse) -> Result<Response<BoxBody>> {
     todo!()
 }
 
