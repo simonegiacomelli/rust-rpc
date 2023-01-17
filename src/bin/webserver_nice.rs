@@ -2,6 +2,7 @@ use std::{convert::Infallible, error::Error, fs, net::SocketAddr};
 use std::fs::{create_dir_all, read};
 use std::future::Future;
 use std::io::{BufRead, Read};
+use std::ops::Add;
 use std::path::{Component, Path, PathBuf};
 
 use bytes::{Buf, Bytes};
@@ -21,11 +22,23 @@ type Result<T> = std::result::Result<T, GenericError>;
 
 const blob_store_folder: &str = "./data/blob-store";
 
+async fn xxx() {
+    let mut last10 = String::new();
+    webserver_start("127.0.0.1:1337".parse().unwrap(), "".to_string(), |req|-> HttpResponse {
+        // last10.add("x");
+        println!("");
+        HttpResponse {
+            content: "".to_string(),
+            content_type: "".to_string(),
+        }
+    });
+}
+
 async fn webserver_start(addr: SocketAddr, s: String, callback: fn(HttpRequest) -> HttpResponse) -> Result<()> {
     let service2 = service_fn(|req: Request<IncomingBody>| {
         println!("{}", s);
 
-        web_handler3(&s , &callback)
+        web_handler3(&s, &callback)
     });
     let service = service_fn(move |req| web_handler(req));
 
