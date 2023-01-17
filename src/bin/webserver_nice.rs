@@ -24,20 +24,19 @@ const blob_store_folder: &str = "./data/blob-store";
 
 async fn xxx() {
     let mut last10 = String::new();
-    webserver_start("127.0.0.1:1337".parse().unwrap(), "".to_string(), |req|-> HttpResponse {
-        // last10.add("x");
+    webserver_start("127.0.0.1:1337".parse().unwrap(), "".to_string(), Box::new(move |req| -> HttpResponse {
+        last10.push('x');
         println!("");
         HttpResponse {
             content: "".to_string(),
             content_type: "".to_string(),
         }
-    });
+    }));
 }
 
-async fn webserver_start(addr: SocketAddr, s: String, callback: fn(HttpRequest) -> HttpResponse) -> Result<()> {
+async fn webserver_start(addr: SocketAddr, s: String, callback: Box<dyn FnMut(HttpRequest) -> HttpResponse>) -> Result<()> {
     let service2 = service_fn(|req: Request<IncomingBody>| {
         println!("{}", s);
-
         web_handler3(&s, &callback)
     });
     let service = service_fn(move |req| web_handler(req));
@@ -90,7 +89,7 @@ async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
     Ok(response)
 }
 
-async fn web_handler3(callback: &String, x: &fn(HttpRequest) -> HttpResponse) -> Result<Response<BoxBody>> {
+async fn web_handler3(callback: &String, x: & dyn FnMut(HttpRequest) -> HttpResponse) -> Result<Response<BoxBody>> {
     todo!()
 }
 
