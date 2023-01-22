@@ -32,7 +32,7 @@ async fn xxx() {
     }));
 }
 
-async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
+async fn web_handler() -> Result<Response<BoxBody>> {
     let response = Response::builder()
         .status(StatusCode::OK)
         .header(header::CONTENT_TYPE, "application/json")
@@ -42,7 +42,7 @@ async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
 }
 
 async fn webserver_start(callback: Box<dyn FnMut(HttpRequest) -> HttpResponse>) -> Result<()> {
-    let service = service_fn(move |req| web_handler(req));
+    let service = service_fn(move |req| web_handler());
 
     pretty_env_logger::init();
 
