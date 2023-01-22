@@ -23,9 +23,7 @@ type Result<T> = std::result::Result<T, GenericError>;
 const blob_store_folder: &str = "./data/blob-store";
 
 async fn xxx() {
-    let mut last10 = String::new();
-    webserver_start("127.0.0.1:1337".parse().unwrap(), "".to_string(), Box::new(move |req| -> HttpResponse {
-        last10.push('x');
+    webserver_start(Box::new(move |req| -> HttpResponse {
         println!("");
         HttpResponse {
             content: "".to_string(),
@@ -35,7 +33,6 @@ async fn xxx() {
 }
 
 async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
-
     let response = Response::builder()
         .status(StatusCode::OK)
         .header(header::CONTENT_TYPE, "application/json")
@@ -44,7 +41,7 @@ async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
     Ok(response)
 }
 
-async fn webserver_start(addr: SocketAddr, s: String, callback: Box<dyn FnMut(HttpRequest) -> HttpResponse>) -> Result<()> {
+async fn webserver_start(callback: Box<dyn FnMut(HttpRequest) -> HttpResponse>) -> Result<()> {
     let service = service_fn(move |req| web_handler(req));
 
     pretty_env_logger::init();
