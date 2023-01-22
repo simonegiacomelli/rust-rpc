@@ -34,11 +34,17 @@ async fn xxx() {
     }));
 }
 
+async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
+
+    let response = Response::builder()
+        .status(StatusCode::OK)
+        .header(header::CONTENT_TYPE, "application/json")
+        .body(full("ciao"))?;
+
+    Ok(response)
+}
+
 async fn webserver_start(addr: SocketAddr, s: String, callback: Box<dyn FnMut(HttpRequest) -> HttpResponse>) -> Result<()> {
-    let service2 = service_fn(|req: Request<IncomingBody>| {
-        println!("{}", s);
-        web_handler3(&s, &callback)
-    });
     let service = service_fn(move |req| web_handler(req));
 
     pretty_env_logger::init();
@@ -60,91 +66,10 @@ async fn webserver_start(addr: SocketAddr, s: String, callback: Box<dyn FnMut(Ht
     }
 }
 
-async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
-    let string = req.uri().to_string();
-    let uri = rem_first(string.as_str());
-    let buf = Path::new(blob_store_folder).canonicalize()?;
-    let abs = buf.to_str().ok_or("err0.9")?;
-    let resource_path = resource_resolve(abs, uri).ok_or("err1.0")?;
-
-    let mut rdr = req.collect().await?.aggregate().reader();
-    let mut body = Vec::new();
-    let body_size = rdr.read_to_end(&mut body)?;
-    println!("size={} ", body_size);
-
-    let path_buf = PathBuf::from(resource_path.clone());
-    let parent = path_buf.parent().ok_or("err1.1")?;
-    create_dir_all(parent)?;
-
-    fs::write(resource_path, body)?;
-
-    // let r = read::IoRead::new(rdr);
-    // reader.read_to_string(&mut body);
-
-    let response = Response::builder()
-        .status(StatusCode::OK)
-        .header(header::CONTENT_TYPE, "application/json")
-        .body(full("ciao"))?;
-
-    Ok(response)
-}
-
-async fn web_handler3(callback: &String, x: & dyn FnMut(HttpRequest) -> HttpResponse) -> Result<Response<BoxBody>> {
-    todo!()
-}
-
-async fn web_handler2(req: Request<IncomingBody>, callback: String) -> Result<Response<BoxBody>> {
-    let string = req.uri().to_string();
-    let uri = rem_first(string.as_str());
-    let buf = Path::new(blob_store_folder).canonicalize()?;
-    let abs = buf.to_str().ok_or("err0.9")?;
-    let resource_path = resource_resolve(abs, uri).ok_or("err1.0")?;
-
-    let mut rdr = req.collect().await?.aggregate().reader();
-    let mut body = Vec::new();
-    let body_size = rdr.read_to_end(&mut body)?;
-    println!("size={} ", body_size);
-
-    let path_buf = PathBuf::from(resource_path.clone());
-    let parent = path_buf.parent().ok_or("err1.1")?;
-    create_dir_all(parent)?;
-
-    fs::write(resource_path, body)?;
-
-    // let r = read::IoRead::new(rdr);
-    // reader.read_to_string(&mut body);
-
-    let response = Response::builder()
-        .status(StatusCode::OK)
-        .header(header::CONTENT_TYPE, "application/json")
-        .body(full("ciao"))?;
-
-    Ok(response)
-}
-
-
 #[tokio::main]
 async fn main() -> Result<()> {
-    pretty_env_logger::init();
-
-    create_dir_all(blob_store_folder)?;
-    let addr: SocketAddr = "127.0.0.1:1337".parse().unwrap();
-    println!("serving on http://{}", addr);
-    let listener = TcpListener::bind(&addr).await?;
-    loop {
-        let (stream, _) = listener.accept().await?;
-
-        tokio::task::spawn(async move {
-            let service = service_fn(move |req| web_handler(req));
-
-            if let Err(err) = http1::Builder::new()
-                .serve_connection(stream, service)
-                .await
-            {
-                println!("Failed to serve connection: {:?}", err);
-            }
-        });
-    }
+    println!("Compila!");
+    Ok(())
 }
 
 
