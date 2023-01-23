@@ -15,6 +15,7 @@ use hyper::server::conn::http1;
 use hyper::service::service_fn;
 use tokio::net::TcpListener;
 use rust_rpc::webserver::{HttpRequest, HttpResponse};
+use rust_rpc::webserver::tokio::to_http_request;
 // use crate::read::{self, Fused, Reference};
 
 
@@ -39,25 +40,6 @@ async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Resul
     Ok(response)
 }
 
-async fn to_http_request(req: Request<Incoming>) -> Option<HttpRequest> {
-    let content_type = get_content_type(&req);
-    let method = req.method().to_string();
-    let url = req.uri().to_string();
-    let collected = req.collect().await.ok()?;
-    let mut rdr = collected.aggregate().reader();
-    // let mut body = Vec::new();
-    let mut content = String::new();
-    let body_size = rdr.read_to_string(&mut content).ok()?;
-    let http_request = HttpRequest {
-        method,
-        content,
-        content_type,
-        url,
-        parameters: HashMap::new(),
-        headers: HashMap::new(),
-    };
-    Some(http_request)
-}
 
 async fn webserver_start(callback: HttpHandler) -> Result<()> {
     println!("webserver_start");
@@ -147,12 +129,3 @@ impl LexicalAbsolute for Path {
 }
 
 
-fn get_content_type(req: &Request<Incoming>) -> String {
-    let ct = req.headers();
-    let header_name = "Content-Type";
-    if ct.contains_key(header_name) {
-        ct.get(header_name).unwrap().to_str().unwrap().to_string()
-    } else {
-        "".to_string()
-    }
-}
