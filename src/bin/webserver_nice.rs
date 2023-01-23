@@ -22,27 +22,32 @@ type Result<T> = std::result::Result<T, GenericError>;
 
 const blob_store_folder: &str = "./data/blob-store";
 
-async fn xxx() {
-    webserver_start(|req| -> HttpResponse {
-        println!("");
-        HttpResponse {
-            content: "".to_string(),
-            content_type: "".to_string(),
-        }
-    });
-}
 
-async fn web_handler(callback: fn(HttpRequest) -> HttpResponse) -> Result<Response<BoxBody>> {
+async fn web_handler(callback: fn(HttpRequest) -> HttpResponse, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
+    let content_type = get_content_type(&req);
+    let method = req.method().to_string();
+    let mut rdr = req.collect().await?.aggregate().reader();
+    // let mut body = Vec::new();
+    let mut content = String::new();
+    let body_size = rdr.read_to_string(&mut content)?;
+    let http_request = HttpRequest {
+        content,
+        content_type,
+        method,
+    };
+    let http_response = callback(http_request);
+
     let response = Response::builder()
         .status(StatusCode::OK)
-        .header(header::CONTENT_TYPE, "application/json")
-        .body(full("ciao"))?;
+        .header(header::CONTENT_TYPE, http_response.content_type)
+        .body(full(http_response.content))?;
 
     Ok(response)
 }
 
 async fn webserver_start(callback: fn(HttpRequest) -> HttpResponse) -> Result<()> {
-    let service = service_fn(move |req| web_handler(callback));
+    println!("webserver_start");
+    let service = service_fn(move |req| web_handler(callback, req));
 
     pretty_env_logger::init();
 
@@ -65,7 +70,13 @@ async fn webserver_start(callback: fn(HttpRequest) -> HttpResponse) -> Result<()
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    println!("Compila!");
+    webserver_start(|req| -> HttpResponse {
+        println!(" hello !");
+        HttpResponse {
+            content: "<h1>from a fn</h1>".to_string(),
+            content_type: "text/html".to_string(),
+        }
+    }).await.unwrap();
     Ok(())
 }
 
@@ -112,5 +123,16 @@ impl LexicalAbsolute for Path {
             }
         }
         Ok(absolute)
+    }
+}
+
+
+fn get_content_type(req: &Request<Incoming>) -> String {
+    let ct = req.headers();
+    let header_name = "Content-Type";
+    if ct.contains_key(header_name) {
+        ct.get(header_name).unwrap().to_str().unwrap().to_string()
+    } else {
+        "".to_string()
     }
 }
