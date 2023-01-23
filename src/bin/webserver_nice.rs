@@ -22,8 +22,10 @@ type Result<T> = std::result::Result<T, GenericError>;
 
 const blob_store_folder: &str = "./data/blob-store";
 
+type HttpHandler = fn(HttpRequest, Context) -> HttpResponse;
 
-async fn web_handler(callback: fn(HttpRequest) -> HttpResponse, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
+
+async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
     let content_type = get_content_type(&req);
     let method = req.method().to_string();
     let mut rdr = req.collect().await?.aggregate().reader();
@@ -35,7 +37,7 @@ async fn web_handler(callback: fn(HttpRequest) -> HttpResponse, req: Request<Inc
         content_type,
         method,
     };
-    let http_response = callback(http_request);
+    let http_response = callback(http_request, Context {});
 
     let response = Response::builder()
         .status(StatusCode::OK)
@@ -45,7 +47,7 @@ async fn web_handler(callback: fn(HttpRequest) -> HttpResponse, req: Request<Inc
     Ok(response)
 }
 
-async fn webserver_start(callback: fn(HttpRequest) -> HttpResponse) -> Result<()> {
+async fn webserver_start(callback: HttpHandler) -> Result<()> {
     println!("webserver_start");
     let service = service_fn(move |req| web_handler(callback, req));
 
@@ -68,9 +70,11 @@ async fn webserver_start(callback: fn(HttpRequest) -> HttpResponse) -> Result<()
     }
 }
 
+struct Context {}
+
 #[tokio::main]
 async fn main() -> Result<()> {
-    webserver_start(|req| -> HttpResponse {
+    webserver_start(|req, ctx| -> HttpResponse {
         println!(" hello !");
         HttpResponse {
             content: "<h1>from a fn</h1>".to_string(),
