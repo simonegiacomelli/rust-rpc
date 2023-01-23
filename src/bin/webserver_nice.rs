@@ -28,21 +28,7 @@ type HttpHandler = fn(HttpRequest, Context) -> HttpResponse;
 
 
 async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
-    let content_type = get_content_type(&req);
-    let method = req.method().to_string();
-    let url = req.uri().to_string();
-    let mut rdr = req.collect().await?.aggregate().reader();
-    // let mut body = Vec::new();
-    let mut content = String::new();
-    let body_size = rdr.read_to_string(&mut content)?;
-    let http_request = HttpRequest {
-        method,
-        content,
-        content_type,
-        url,
-        parameters: HashMap::new(),
-        headers: HashMap::new(),
-    };
+    let http_request = to_http_request(req).await.ok_or("ciao")?;
     let http_response = callback(http_request, Context {});
 
     let response = Response::builder()
@@ -51,6 +37,26 @@ async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Resul
         .body(full(http_response.content))?;
 
     Ok(response)
+}
+
+async fn to_http_request(req: Request<Incoming>) -> Option<HttpRequest> {
+    let content_type = get_content_type(&req);
+    let method = req.method().to_string();
+    let url = req.uri().to_string();
+    let collected = req.collect().await.ok()?;
+    let mut rdr = collected.aggregate().reader();
+    // let mut body = Vec::new();
+    let mut content = String::new();
+    let body_size = rdr.read_to_string(&mut content).ok()?;
+    let http_request = HttpRequest {
+        method,
+        content,
+        content_type,
+        url,
+        parameters: HashMap::new(),
+        headers: HashMap::new(),
+    };
+    Some(http_request)
 }
 
 async fn webserver_start(callback: HttpHandler) -> Result<()> {
@@ -82,7 +88,7 @@ struct Context {}
 async fn main() -> Result<()> {
     webserver_start(|req, ctx| -> HttpResponse {
         println!(" hello !");
-        let content = format!("<h1>from a fn, url: {}</h1>",req.url);
+        let content = format!("<h1>from a fn, url: {}</h1>", req.url);
 
         HttpResponse {
             content,
