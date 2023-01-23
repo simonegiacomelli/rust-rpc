@@ -1,7 +1,9 @@
 use std::{convert::Infallible, error::Error, fs, net::SocketAddr};
+use std::collections::HashMap;
 use std::fs::{create_dir_all, read};
 use std::future::Future;
 use std::io::{BufRead, Read};
+use std::iter::Map;
 use std::ops::Add;
 use std::path::{Component, Path, PathBuf};
 
@@ -28,14 +30,18 @@ type HttpHandler = fn(HttpRequest, Context) -> HttpResponse;
 async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
     let content_type = get_content_type(&req);
     let method = req.method().to_string();
+    let url = req.uri().to_string();
     let mut rdr = req.collect().await?.aggregate().reader();
     // let mut body = Vec::new();
     let mut content = String::new();
     let body_size = rdr.read_to_string(&mut content)?;
     let http_request = HttpRequest {
+        method,
         content,
         content_type,
-        method,
+        url,
+        parameters: HashMap::new(),
+        headers: HashMap::new(),
     };
     let http_response = callback(http_request, Context {});
 
@@ -76,9 +82,13 @@ struct Context {}
 async fn main() -> Result<()> {
     webserver_start(|req, ctx| -> HttpResponse {
         println!(" hello !");
+        let content = format!("<h1>from a fn, url: {}</h1>",req.url);
+
         HttpResponse {
-            content: "<h1>from a fn</h1>".to_string(),
+            content,
             content_type: "text/html".to_string(),
+            status: 200,
+            headers: HashMap::new(),
         }
     }).await.unwrap();
     Ok(())
