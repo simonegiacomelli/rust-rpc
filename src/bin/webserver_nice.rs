@@ -14,9 +14,11 @@ use hyper::body::{Body, Incoming};
 use hyper::server::conn::http1;
 use hyper::service::service_fn;
 use tokio::net::TcpListener;
+
 use rust_rpc::webserver;
 use rust_rpc::webserver::{HttpRequest, HttpResponse};
 use rust_rpc::webserver::tokio::to_http_request;
+
 // use crate::read::{self, Fused, Reference};
 
 
@@ -28,11 +30,20 @@ const blob_store_folder: &str = "./data/blob-store";
 
 type HttpHandler = fn(HttpRequest, Context) -> HttpResponse;
 
+#[tokio::main]
+async fn main() -> Result<()> {
+    webserver_start(|req, ctx| -> HttpResponse {
+        println!(" hello !");
+        let content = format!("<h1>from a fn, url: {}</h1>", req.url);
 
-async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
-    let http_request = to_http_request(req).await?;
-    let http_response = callback(http_request, Context {});
-    webserver::tokio::to_http_response(http_response)
+        HttpResponse {
+            content,
+            content_type: "text/html".to_string(),
+            status: 200,
+            headers: HashMap::new(),
+        }
+    }).await.unwrap();
+    Ok(())
 }
 
 
@@ -59,63 +70,13 @@ async fn webserver_start(callback: HttpHandler) -> Result<()> {
     }
 }
 
+
+async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
+    let http_request = to_http_request(req).await?;
+    let http_response = callback(http_request, Context {});
+    webserver::tokio::to_http_response(http_response)
+}
+
 struct Context {}
-
-#[tokio::main]
-async fn main() -> Result<()> {
-    webserver_start(|req, ctx| -> HttpResponse {
-        println!(" hello !");
-        let content = format!("<h1>from a fn, url: {}</h1>", req.url);
-
-        HttpResponse {
-            content,
-            content_type: "text/html".to_string(),
-            status: 200,
-            headers: HashMap::new(),
-        }
-    }).await.unwrap();
-    Ok(())
-}
-
-
-
-fn rem_first(value: &str) -> &str {
-    let mut chars = value.chars();
-    chars.next();
-    // chars.next_back();
-    chars.as_str()
-}
-
-
-pub fn resource_resolve(root: &str, child: &str) -> Option<String> {
-    let root_path = Path::new(root);
-    let result = root_path.join(child).to_lexical_absolute().ok()?;
-    if !result.starts_with(root_path) {
-        return None;
-    }
-    Some(result.to_str()?.to_string())
-}
-
-trait LexicalAbsolute {
-    fn to_lexical_absolute(&self) -> std::io::Result<PathBuf>;
-}
-
-impl LexicalAbsolute for Path {
-    fn to_lexical_absolute(&self) -> std::io::Result<PathBuf> {
-        let mut absolute = if self.is_absolute() {
-            PathBuf::new()
-        } else {
-            std::env::current_dir()?
-        };
-        for component in self.components() {
-            match component {
-                Component::CurDir => {}
-                Component::ParentDir => { absolute.pop(); }
-                component @ _ => absolute.push(component.as_os_str()),
-            }
-        }
-        Ok(absolute)
-    }
-}
 
 
