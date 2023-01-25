@@ -32,11 +32,16 @@ async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Resul
     let http_request = to_http_request(req).await?;
     let http_response = callback(http_request, Context {});
 
+    let response = to_http_response(http_response);
+
+    response
+}
+
+fn to_http_response(http_response: HttpResponse) -> Result<Response<BoxBody>> {
     let response = Response::builder()
         .status(StatusCode::OK)
         .header(header::CONTENT_TYPE, http_response.content_type)
         .body(full(http_response.content))?;
-
     Ok(response)
 }
 
