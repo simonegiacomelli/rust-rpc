@@ -29,7 +29,7 @@ type HttpHandler = fn(HttpRequest, Context) -> HttpResponse;
 
 
 async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
-    let http_request = to_http_request(req).await.ok_or("ciao")?;
+    let http_request = to_http_request(req).await?;
     let http_response = callback(http_request, Context {});
 
     let response = Response::builder()

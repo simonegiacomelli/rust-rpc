@@ -24,15 +24,15 @@ type GenericError = Box<dyn Error + Send + Sync>;
 type BoxBody = http_body_util::combinators::BoxBody<Bytes, hyper::Error>;
 type Result<T> = std::result::Result<T, GenericError>;
 
-pub async fn to_http_request(req: Request<Incoming>) -> Option<HttpRequest> {
+pub async fn to_http_request(req: Request<Incoming>) -> Result<HttpRequest> {
     let content_type = get_content_type(&req);
     let method = req.method().to_string();
     let url = req.uri().to_string();
-    let collected = req.collect().await.ok()?;
+    let collected = req.collect().await?;
     let mut rdr = collected.aggregate().reader();
     // let mut body = Vec::new();
     let mut content = String::new();
-    let body_size = rdr.read_to_string(&mut content).ok()?;
+    let body_size = rdr.read_to_string(&mut content)?;
     let http_request = HttpRequest {
         method,
         content,
@@ -41,7 +41,7 @@ pub async fn to_http_request(req: Request<Incoming>) -> Option<HttpRequest> {
         parameters: HashMap::new(),
         headers: HashMap::new(),
     };
-    Some(http_request)
+    Ok(http_request)
 }
 
 
