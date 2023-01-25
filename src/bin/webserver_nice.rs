@@ -32,10 +32,7 @@ type HttpHandler = fn(HttpRequest, Context) -> HttpResponse;
 async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
     let http_request = to_http_request(req).await?;
     let http_response = callback(http_request, Context {});
-
-    let response = webserver::tokio::to_http_response(http_response);
-
-    response
+    webserver::tokio::to_http_response(http_response)
 }
 
 
