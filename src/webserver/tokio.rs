@@ -54,3 +54,17 @@ fn get_content_type(req: &Request<Incoming>) -> String {
         "".to_string()
     }
 }
+
+pub fn to_http_response(http_response: HttpResponse) -> Result<Response<BoxBody>> {
+    let response = Response::builder()
+        .status(StatusCode::OK)
+        .header(header::CONTENT_TYPE, http_response.content_type)
+        .body(full(http_response.content))?;
+    Ok(response)
+}
+
+fn full<T: Into<Bytes>>(chunk: T) -> BoxBody {
+    Full::new(chunk.into())
+        .map_err(|never| match never {})
+        .boxed()
+}

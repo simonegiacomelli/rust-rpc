@@ -14,6 +14,7 @@ use hyper::body::{Body, Incoming};
 use hyper::server::conn::http1;
 use hyper::service::service_fn;
 use tokio::net::TcpListener;
+use rust_rpc::webserver;
 use rust_rpc::webserver::{HttpRequest, HttpResponse};
 use rust_rpc::webserver::tokio::to_http_request;
 // use crate::read::{self, Fused, Reference};
@@ -32,17 +33,9 @@ async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Resul
     let http_request = to_http_request(req).await?;
     let http_response = callback(http_request, Context {});
 
-    let response = to_http_response(http_response);
+    let response = webserver::tokio::to_http_response(http_response);
 
     response
-}
-
-fn to_http_response(http_response: HttpResponse) -> Result<Response<BoxBody>> {
-    let response = Response::builder()
-        .status(StatusCode::OK)
-        .header(header::CONTENT_TYPE, http_response.content_type)
-        .body(full(http_response.content))?;
-    Ok(response)
 }
 
 
@@ -88,11 +81,6 @@ async fn main() -> Result<()> {
 }
 
 
-fn full<T: Into<Bytes>>(chunk: T) -> BoxBody {
-    Full::new(chunk.into())
-        .map_err(|never| match never {})
-        .boxed()
-}
 
 fn rem_first(value: &str) -> &str {
     let mut chars = value.chars();
