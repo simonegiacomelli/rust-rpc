@@ -51,6 +51,7 @@ mod tests {
     use tokio::runtime::Runtime;
 
     use rust_rpc::webserver::HttpResponse;
+    use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
 
     use crate::webserver_start;
 
@@ -107,20 +108,5 @@ mod tests {
         println!("{}", msg);
     }
 
-    async fn wait_webserver_responsive(url: &str) {
-        for _ in 0..300 {
-            let res = reqwest::get(url).await;
-            println!("{:?}", res);
-            match res {
-                Ok(ok) => { return; }
-                Err(err) => {
-                    println!("is_connect={}", err.is_connect());
-                }
-            }
-
-            tokio::time::sleep(Duration::from_millis(1)).await;
-        }
-        panic!("timeout waiting for {}",url);
-    }
 }
 
