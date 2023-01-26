@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::iter::Map;
+
 pub mod tokio_conversion;
+pub mod tokio_server;
 
 pub struct HttpRequest {
     pub method: String,
@@ -18,3 +20,9 @@ pub struct HttpResponse {
     pub status: u16,
     pub headers: HashMap<String, String>,
 }
+
+
+pub struct Context {}
+
+
+pub type HttpHandler = fn(HttpRequest, Context) -> HttpResponse;

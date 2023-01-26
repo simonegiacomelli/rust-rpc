@@ -14,23 +14,14 @@ use http_body_util::{BodyExt, Full};
 use hyper::{body::Incoming as IncomingBody, header, Method, Request, Response, StatusCode};
 use hyper::body::{Body, Incoming};
 use hyper::server::conn::http1;
-use hyper::service::service_fn;
-use tokio::net::TcpListener;
-
-use rust_rpc::webserver;
-use rust_rpc::webserver::{HttpRequest, HttpResponse};
-use rust_rpc::webserver::tokio_conversion::to_http_request;
-
-// use crate::read::{self, Fused, Reference};
+use rust_rpc::webserver::HttpResponse;
+use rust_rpc::webserver::tokio_server::webserver_start;
 
 
 type GenericError = Box<dyn std::error::Error + Send + Sync>;
 type BoxBody = http_body_util::combinators::BoxBody<Bytes, hyper::Error>;
 type Result<T> = std::result::Result<T, GenericError>;
 
-const blob_store_folder: &str = "./data/blob-store";
-
-type HttpHandler = fn(HttpRequest, Context) -> HttpResponse;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -48,38 +39,6 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-
-async fn webserver_start(callback: HttpHandler) -> Result<()> {
-    println!("webserver_start");
-    let service = service_fn(move |req| web_handler(callback, req));
-
-    pretty_env_logger::init();
-
-    let addr: SocketAddr = "127.0.0.1:1337".parse().unwrap();
-    println!("serving on http://{}", addr);
-    let listener = TcpListener::bind(&addr).await?;
-    loop {
-        let (stream, _) = listener.accept().await?;
-
-        tokio::task::spawn(async move {
-            if let Err(err) = http1::Builder::new()
-                .serve_connection(stream, service)
-                .await
-            {
-                println!("Failed to serve connection: {:?}", err);
-            }
-        });
-    }
-}
-
-
-async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
-    let http_request = to_http_request(req).await?;
-    let http_response = callback(http_request, Context {});
-    webserver::tokio_conversion::to_http_response(http_response)
-}
-
-struct Context {}
 
 
 #[cfg(test)]
