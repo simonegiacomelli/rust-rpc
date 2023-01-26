@@ -32,9 +32,10 @@ async fn test_wait_nothing() {
 
 #[tokio::test]
 async fn test_wait() {
-    let port = find_port();
-    tokio::spawn(async {
-        webserver_start(|req, ctx| -> HttpResponse {
+    let port = find_port().unwrap();
+    tokio::spawn(async move {
+        let string = format!("127.0.0.1:{}", port);
+        webserver_start(&string, |req, ctx| -> HttpResponse {
             HttpResponse {
                 content: "no content".to_string(),
                 content_type: "text/html".to_string(),
@@ -43,10 +44,10 @@ async fn test_wait() {
             }
         }).await.unwrap();
     });
-
-    wait_webserver_responsive("http://127.0.0.1:4444").await;
+    let url = &format!("http://127.0.0.1:{}", port);
+    wait_webserver_responsive(url).await;
     tokio::time::sleep(Duration::new(1, 0)).await;
-    reqwest::get("http://127.0.0.1:1337").await.unwrap().text().await;
+    reqwest::get(url).await.unwrap().text().await;
     tokio::time::sleep(Duration::new(1, 0)).await;
     // std::thread::sleep(Duration::new(5, 0));
     let result = 2 + 2;

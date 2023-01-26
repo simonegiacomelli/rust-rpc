@@ -31,13 +31,13 @@ type Result<T> = std::result::Result<T, GenericError>;
 
 
 
-pub async fn webserver_start(callback: HttpHandler) -> Result<()> {
+pub async fn webserver_start(host_port: &str, callback: HttpHandler) -> Result<()> {
     println!("webserver_start");
     let service = service_fn(move |req| web_handler(callback, req));
 
     pretty_env_logger::init();
 
-    let addr: SocketAddr = "127.0.0.1:1337".parse().unwrap();
+    let addr: SocketAddr = host_port.parse().unwrap();
     println!("serving on http://{}", addr);
     let listener = TcpListener::bind(&addr).await?;
     loop {
