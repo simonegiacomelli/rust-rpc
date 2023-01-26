@@ -57,7 +57,7 @@ fn get_content_type(req: &Request<Incoming>) -> String {
 
 pub fn to_http_response(http_response: HttpResponse) -> Result<Response<BoxBody>> {
     let response = Response::builder()
-        .status(StatusCode::OK)
+        .status(StatusCode::from_u16(http_response.status)?)
         .header(header::CONTENT_TYPE, http_response.content_type)
         .body(full(http_response.content))?;
     Ok(response)
