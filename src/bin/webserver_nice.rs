@@ -79,4 +79,74 @@ async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Resul
 
 struct Context {}
 
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+    use std::error::Error;
+    use std::thread;
+    use std::thread::Thread;
+    use std::time::Duration;
+    use tokio::runtime::Runtime;
+
+    use rust_rpc::webserver::HttpResponse;
+
+    use crate::webserver_start;
+
+    #[tokio::test]
+    async fn test_in_root() {
+        tokio::spawn(async {
+            webserver_start(|req, ctx| -> HttpResponse {
+                println!(" hello !");
+                let content = format!("<h1>from a fn, url: {}</h1>", req.url);
+
+                HttpResponse {
+                    content,
+                    content_type: "text/html".to_string(),
+                    status: 200,
+                    headers: HashMap::new(),
+                }
+            }).await.unwrap();
+        });
+
+        wait_webserver_responsive("http://127.0.0.1:1337").await;
+        tokio::time::sleep(Duration::new(1, 0)).await;
+        reqwest::get("http://127.0.0.1:1337").await.unwrap().text().await;
+        tokio::time::sleep(Duration::new(1, 0)).await;
+        // std::thread::sleep(Duration::new(5, 0));
+        let result = 2 + 2;
+        assert_eq!(result, 4);
+    }
+
+    async fn async_function(msg: &str) {
+        println!("{}", msg);
+    }
+
+    async fn wait_webserver_responsive(url: &str) {
+        for _ in 0..300 {
+            let res = reqwest::get("http://127.0.0.1:1337/check_if_webserver_is_up").await;
+            println!("{:?}", res);
+            match res {
+                Ok(ok) => { return; }
+                Err(err) => {
+
+                    if let Some(err2) = err.source() {
+                        println!("err2={:?}", err2);
+                        let err3 = err2.source();
+                        println!("err3={:?}", err3);
+                        println!("magic={}", format!("{:?}", err3));
+                        match err3 {
+                            Some(err4) => {
+                                println!("err4={:?}", err4);
+                                // std::any::type_name()
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+            }
+
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    }
+}
 
