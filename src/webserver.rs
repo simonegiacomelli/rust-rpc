@@ -24,6 +24,16 @@ pub struct HttpResponse {
     pub headers: HashMap<String, String>,
 }
 
+impl HttpResponse {
+    fn new(content: String) -> HttpResponse {
+        HttpResponse {
+            content,
+            content_type: "plain/text".to_string(),
+            status: 200,
+            headers: HashMap::new(),
+        }
+    }
+}
 
 pub struct Context {}
 

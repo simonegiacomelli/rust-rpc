@@ -1,7 +1,7 @@
 use crate::proxy::Transport;
 
-struct HttpReqwestTransport {
-    url: String,
+pub struct HttpReqwestTransport {
+    pub url: String,
 }
 
 impl Transport for HttpReqwestTransport {

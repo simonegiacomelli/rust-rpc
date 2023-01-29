@@ -2,15 +2,6 @@ use std::collections::HashMap;
 use rust_rpc::*;
 use rust_rpc::proxy::*;
 
-struct MockTransport {
-    context_handler: ContextHandler,
-}
-
-impl Transport for MockTransport {
-    fn send(&self, payload: &str) -> String {
-        self.context_handler.dispatch(payload)
-    }
-}
 
 #[tokio::test]
 async fn test() {
@@ -37,8 +28,8 @@ async fn test() {
     context_handler.register(move |req: AddRequest| -> AddResponse {
         AddResponse { addResult: req.a + req.b }
     });
-
-    let http_transport = MockTransport { context_handler };
+    let url = url.to_string();
+    let http_transport = HttpReqwestTransport { url };
     let proxy = Proxy::new(http_transport);
 
     let request = MulRequest { a: 6, b: 7 };
@@ -55,6 +46,7 @@ use serde::de::DeserializeOwned;
 use rust_rpc::find_port::find_port;
 use rust_rpc::rpc::ContextHandler;
 use rust_rpc::webserver::HttpResponse;
+use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;
 use rust_rpc::webserver::tokio_server::webserver_start;
 use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
 
