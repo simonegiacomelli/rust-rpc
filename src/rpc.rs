@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 use std::fmt::Debug;
+use crate::g_result::GResult;
 
 pub mod api_point;
 
