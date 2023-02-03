@@ -14,6 +14,7 @@ async fn test() {
             if req.method == "GET" {
                 return HttpResponse::new("GET method not supported".to_string());
             }
+            // TODO spostare handler fuori / oppure altra soluzione?
             let mut context_handler = ContextHandler::new();
             context_handler.register(move |req: MulRequest| -> MulResponse {
                 MulResponse { mulResult: req.a * req.b }

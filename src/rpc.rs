@@ -45,6 +45,8 @@ impl ContextHandler {
         let handler_key = get_handler_key::<Req, Res>();
         println!("registering=`{handler_key}`");
         self.handlers.insert(handler_key, Box::new(move |payload| {
+            // TODO centralizzare la ser/des in modo che gestisca una variante Err(str)/Ok<T>(t:T)
+
             let req: Req = serde_json::from_str(payload).unwrap();
             let res = callback(req);
             let res_json = serde_json::to_string(&res).unwrap();
