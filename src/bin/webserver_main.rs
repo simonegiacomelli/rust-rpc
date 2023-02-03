@@ -11,17 +11,16 @@ use hyper::body::Body;
 use hyper::server::conn::http1;
 use hyper::service::service_fn;
 use tokio::net::TcpListener;
+use rust_rpc::g_result::GResult;
 // use crate::read::{self, Fused, Reference};
 
 
-type GenericError = Box<dyn std::error::Error + Send + Sync>;
 type BoxBody = http_body_util::combinators::BoxBody<Bytes, hyper::Error>;
-type Result<T> = std::result::Result<T, GenericError>;
 
 const blob_store_folder: &str = "./data/blob-store";
 
 
-async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
+async fn web_handler(req: Request<IncomingBody>) -> GResult<Response<BoxBody>> {
     let string = req.uri().to_string();
     let uri = rem_first(string.as_str());
     let buf = Path::new(blob_store_folder).canonicalize()?;
@@ -75,7 +74,7 @@ async fn web_handler(req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
 
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> GResult<()> {
     pretty_env_logger::init();
 
     create_dir_all(blob_store_folder)?;
