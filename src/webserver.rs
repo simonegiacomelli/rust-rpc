@@ -25,7 +25,7 @@ pub struct HttpResponse {
 }
 
 impl HttpResponse {
-    fn new(content: String) -> HttpResponse {
+    pub fn new(content: String) -> HttpResponse {
         HttpResponse {
             content,
             content_type: "plain/text".to_string(),

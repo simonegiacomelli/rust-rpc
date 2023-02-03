@@ -1,3 +1,5 @@
+extern crate core;
+
 use std::collections::HashMap;
 use rust_rpc::*;
 use rust_rpc::proxy::*;
@@ -9,36 +11,35 @@ async fn test() {
     tokio::spawn(async move {
         let string = format!("127.0.0.1:{}", port);
         webserver_start(&string, |req, ctx| -> HttpResponse {
-            HttpResponse {
-                content: "no content".to_string(),
-                content_type: "text/html".to_string(),
-                status: 404,
-                headers: HashMap::new(),
+            if req.method == "GET" {
+                return HttpResponse::new("GET method not supported".to_string());
             }
+            let mut context_handler = ContextHandler::new();
+            context_handler.register(move |req: MulRequest| -> MulResponse {
+                MulResponse { mulResult: req.a * req.b }
+            });
+            context_handler.register(move |req: AddRequest| -> AddResponse {
+                AddResponse { addResult: req.a + req.b }
+            });
+            let res = context_handler.dispatch(&req.content);
+            HttpResponse::new(res)
         }).await.unwrap();
     });
     let url = &format!("http://127.0.0.1:{}", port);
     wait_webserver_responsive(url).await;
 
 
-    let mut context_handler = ContextHandler::new();
-    context_handler.register(move |req: MulRequest| -> MulResponse {
-        MulResponse { mulResult: req.a * req.b }
-    });
-    context_handler.register(move |req: AddRequest| -> AddResponse {
-        AddResponse { addResult: req.a + req.b }
-    });
     let url = url.to_string();
     let http_transport = HttpReqwestTransport { url };
     let proxy = Proxy::new(http_transport);
 
     let request = MulRequest { a: 6, b: 7 };
-    let response = proxy.send(&request);
+    let response = proxy.send(&request).await;
     assert_eq!(response.mulResult, 42);
 
     let request = AddRequest { a: 6, b: 7 };
-    let response = proxy.send(&request);
-    assert_eq!(response.addResult, 13)
+    let response = proxy.send(&request).await;
+    assert_eq!(response.addResult, 13);
 }
 
 use serde::{Deserialize, Serialize};
