@@ -2,7 +2,6 @@ extern crate core;
 
 use std::collections::HashMap;
 use rust_rpc::*;
-use rust_rpc::proxy::*;
 
 
 #[tokio::test]
@@ -47,6 +46,7 @@ use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 use rust_rpc::find_port::find_port;
 use rust_rpc::rpc::context_handler::{ContextHandler, Request};
+use rust_rpc::rpc::Proxy;
 use rust_rpc::webserver::HttpResponse;
 use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;
 use rust_rpc::webserver::tokio_server::webserver_start;
