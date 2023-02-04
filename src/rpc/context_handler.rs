@@ -4,6 +4,7 @@ use serde::de::DeserializeOwned;
 use std::fmt::Debug;
 use crate::rpc;
 use crate::rpc::conversions;
+use crate::rpc::conversions::rpc_error;
 
 pub trait Request<Req> {}
 
@@ -41,9 +42,17 @@ impl ContextHandler {
 
 
     pub fn dispatch(&self, request_payload: &str) -> String {
-        let p = Payload::from(request_payload).unwrap();
-        let x = self.handlers.get(p.handler_key).unwrap();
-        x(p.json)
+        let p = Payload::from(request_payload);
+        if let Err(msg) = p { return rpc_error(&msg); }
+        let payload = p.unwrap();
+        let x = self.handlers.get(payload.handler_key);
+        match x {
+            None => {
+                let msg1 = format!("dispatch handler not found `{}`", payload.handler_key);
+                rpc_error(&msg1)
+            }
+            Some(fun) => { fun(payload.json) }
+        }
     }
 }
 
