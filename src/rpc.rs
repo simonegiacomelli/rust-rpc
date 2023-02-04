@@ -85,17 +85,20 @@ impl<'a> Payload<'a> {
 }
 
 
-fn rpc_req_from_str<Req, Res>(payload: &str) -> Req where Req: Request<Res>, Req: ?Sized + Serialize + DeserializeOwned + Debug, Res: ?Sized + Serialize + DeserializeOwned + Debug {
+fn rpc_req_from_str<Req>(payload: &str) -> Req
+    where Req: ?Sized + Serialize + DeserializeOwned + Debug {
     let req: Req = serde_json::from_str(payload).unwrap();
     req
 }
 
-fn rpc_res_to_str<Res>(res: &Res) -> String where Res: ?Sized + Serialize + DeserializeOwned + Debug {
+fn rpc_res_to_str<Res>(res: &Res) -> String
+    where Res: ?Sized + Serialize + DeserializeOwned + Debug {
     let res_json = serde_json::to_string(&res).unwrap();
     res_json
 }
 
-pub fn rpc_req_to_str<Req>(req: &Req) -> String where Req: ?Sized + Serialize + DeserializeOwned + Debug {
+pub fn rpc_req_to_str<Req>(req: &Req) -> String
+    where Req: ?Sized + Serialize + DeserializeOwned + Debug {
     let req_json = serde_json::to_string(req).unwrap();
     req_json
 }
