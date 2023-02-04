@@ -3,6 +3,7 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use std::fmt::Debug;
 use crate::rpc;
+use crate::rpc::conversions;
 
 pub trait Request<Req> {}
 
@@ -30,9 +31,9 @@ impl ContextHandler {
         self.handlers.insert(handler_key, Box::new(move |payload| {
             // TODO centralizzare la ser/des in modo che gestisca una variante Err(str)/Ok<T>(t:T)
 
-            let req = rpc::rpc_req_from_str(payload);
+            let req = conversions::rpc_req_from_str(payload);
             let res = callback(req);
-            let res_json = rpc::rpc_res_to_str(&res);
+            let res_json = conversions::rpc_res_to_str(&res);
             res_json
         }));
     }
