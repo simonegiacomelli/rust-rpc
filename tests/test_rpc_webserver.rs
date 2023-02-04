@@ -10,9 +10,7 @@ async fn test() {
     tokio::spawn(async move {
         let string = format!("127.0.0.1:{}", port);
         webserver_start(&string, |req, ctx| -> HttpResponse {
-            if req.method == "GET" {
-                return HttpResponse::new("GET method not supported".to_string());
-            }
+            // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
             let mut context_handler = ContextHandler::new();
             context_handler.register(move |req: MulRequest| -> MulResponse {
@@ -51,7 +49,6 @@ use rust_rpc::webserver::HttpResponse;
 use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;
 use rust_rpc::webserver::tokio_server::webserver_start;
 use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
-
 
 
 impl Request<MulResponse> for MulRequest {}

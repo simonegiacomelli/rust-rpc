@@ -32,6 +32,7 @@ impl ContextHandler {
             // TODO centralizzare la ser/des in modo che gestisca una variante Err(str)/Ok<T>(t:T)
 
             let req = conversions::rpc_req_from_str(payload);
+            if let Err(msg) = req { return msg; }
             let res = callback(req.unwrap());
             let res_json = conversions::rpc_res_to_str(&res);
             res_json
@@ -45,7 +46,6 @@ impl ContextHandler {
         x(p.json)
     }
 }
-
 
 
 pub fn get_handler_key<Req, Res>() -> String
