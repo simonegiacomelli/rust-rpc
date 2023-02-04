@@ -24,9 +24,8 @@ pub fn rpc_res_to_str<Res>(res: &Res) -> String
     res_json
 }
 
-pub fn rpc_res_from_str<Res>(res_payload: &String) -> Res
-
+pub fn rpc_res_from_str<Res>(res_payload: &String) -> Result<Res, String>
     where Res: ?Sized + Serialize + DeserializeOwned + Debug {
     let res: Res = serde_json::from_str(&res_payload).unwrap();
-    res
+    Ok(res)
 }

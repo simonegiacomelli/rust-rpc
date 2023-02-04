@@ -32,11 +32,11 @@ async fn test() {
     let proxy = Proxy::new(http_transport);
 
     let request = MulRequest { a: 6, b: 7 };
-    let response = proxy.send(&request).await;
+    let response = proxy.send(&request).await.unwrap();
     assert_eq!(response.mulResult, 42);
 
     let request = AddRequest { a: 6, b: 7 };
-    let response = proxy.send(&request).await;
+    let response = proxy.send(&request).await.unwrap();
     assert_eq!(response.addResult, 13);
 }
 

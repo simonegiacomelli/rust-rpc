@@ -22,7 +22,7 @@ impl Proxy {
             transport: Box::new(transport)
         }
     }
-    pub async fn send<Req, Res>(&self, req: &Req) -> Res
+    pub async fn send<Req, Res>(&self, req: &Req) -> Result<Res,String>
         where Req: Request<Res>,
               Req: ?Sized + Serialize + DeserializeOwned + Debug,
               Res: ?Sized + Serialize + DeserializeOwned + Debug,
