@@ -1,6 +1,7 @@
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 use std::fmt::Debug;
+use serde_json::Error;
 
 pub fn rpc_req_to_str<Req>(req: &Req) -> String
     where Req: ?Sized + Serialize + DeserializeOwned + Debug {
@@ -8,10 +9,10 @@ pub fn rpc_req_to_str<Req>(req: &Req) -> String
     req_json
 }
 
-pub fn rpc_req_from_str<Req>(payload: &str) -> Req
+pub fn rpc_req_from_str<Req>(payload: &str) -> Result<Req, Error>
     where Req: ?Sized + Serialize + DeserializeOwned + Debug {
-    let req: Req = serde_json::from_str(payload).unwrap();
-    req
+    let req: Req = serde_json::from_str(payload)?;
+    Ok(req)
 }
 
 pub fn rpc_res_to_str<Res>(res: &Res) -> String

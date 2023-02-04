@@ -32,7 +32,7 @@ impl ContextHandler {
             // TODO centralizzare la ser/des in modo che gestisca una variante Err(str)/Ok<T>(t:T)
 
             let req = conversions::rpc_req_from_str(payload);
-            let res = callback(req);
+            let res = callback(req.unwrap());
             let res_json = conversions::rpc_res_to_str(&res);
             res_json
         }));
