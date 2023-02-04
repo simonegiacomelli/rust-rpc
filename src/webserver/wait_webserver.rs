@@ -12,7 +12,13 @@ pub async fn wait_webserver_responsive_times(url: &str, times: usize) -> Result<
     for _ in 0..times {
         let res = reqwest::get(url).await;
         match res {
-            Ok(ok) => { return Ok(()); }
+            Ok(ok) => {
+                // print!("{:?} === ", ok);
+                // let text = ok.text().await.unwrap();
+                // println!("{:?}", text);
+                //
+                return Ok(());
+            }
             Err(err) => {
                 // println!("is_connect={}", err.is_connect());
             }
