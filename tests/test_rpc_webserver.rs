@@ -16,6 +16,7 @@ async fn test() {
             context_handler.register(move |req: MulRequest| -> MulResponse {
                 MulResponse { mulResult: req.a * req.b }
             });
+            // todo commentare le prossime tre righe e gestire la decodifica dell'errore lato client (susscess=x)
             context_handler.register(move |req: AddRequest| -> AddResponse {
                 AddResponse { addResult: req.a + req.b }
             });
