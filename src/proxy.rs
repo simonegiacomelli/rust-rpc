@@ -32,7 +32,7 @@ impl Proxy {
         let req_payload = payload.to_string();
         let res_payload = self.transport.send(&req_payload).await;
         println!("res_payload={}", res_payload);
-        let res: Res = serde_json::from_str(&res_payload).unwrap();
+        let res = rpc::rpc_res_from_str(&res_payload);
         res
     }
 }
