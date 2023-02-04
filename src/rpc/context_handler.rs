@@ -3,7 +3,13 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use std::fmt::Debug;
 use crate::rpc;
-use crate::rpc::{ContextHandler, Payload, Request};
+
+pub trait Request<Req> {}
+
+
+pub struct ContextHandler {
+    handlers: HashMap<String, Box<dyn Fn(&str) -> String>>,
+}
 
 impl ContextHandler {
     pub fn new() -> ContextHandler { ContextHandler { handlers: HashMap::new() } }
@@ -19,7 +25,7 @@ impl ContextHandler {
               Req: ?Sized + Serialize + DeserializeOwned + Debug,
               Res: ?Sized + Serialize + DeserializeOwned + Debug,
     {
-        let handler_key = rpc::get_handler_key::<Req, Res>();
+        let handler_key = get_handler_key::<Req, Res>();
         println!("registering=`{handler_key}`");
         self.handlers.insert(handler_key, Box::new(move |payload| {
             // TODO centralizzare la ser/des in modo che gestisca una variante Err(str)/Ok<T>(t:T)
@@ -38,3 +44,38 @@ impl ContextHandler {
         x(p.json)
     }
 }
+
+
+
+pub fn get_handler_key<Req, Res>() -> String
+    where Req: Request<Res>,
+{
+    let req_name = std::any::type_name::<Req>();
+    let res_name = std::any::type_name::<Res>();
+
+    let key = format!("{req_name}-{res_name}");
+    key
+}
+
+
+pub struct Payload<'a> {
+    pub handler_key: &'a str,
+    pub json: &'a str,
+}
+
+impl<'a> Payload<'a> {
+    pub fn from(payload: &str) -> Payload {
+        let mut s = payload.splitn(2, "\n");
+        let h = s.next().unwrap();
+        let j = s.next().unwrap();
+        Payload {
+            handler_key: h,
+            json: j,
+        }
+    }
+
+    pub fn to_string(&self) -> String {
+        self.handler_key.to_owned() + "\n" + &*self.json
+    }
+}
+

@@ -46,13 +46,13 @@ async fn test() {
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 use rust_rpc::find_port::find_port;
-use rust_rpc::rpc::ContextHandler;
+use rust_rpc::rpc::context_handler::{ContextHandler, Request};
 use rust_rpc::webserver::HttpResponse;
 use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;
 use rust_rpc::webserver::tokio_server::webserver_start;
 use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
 
-use crate::rpc::Request;
+
 
 impl Request<MulResponse> for MulRequest {}
 

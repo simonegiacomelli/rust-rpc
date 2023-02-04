@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
+use crate::rpc::context_handler::Request;
 
-use crate::rpc::Request;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PointRequest {

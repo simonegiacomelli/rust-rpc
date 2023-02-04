@@ -3,7 +3,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use async_trait::async_trait;
 use crate::rpc;
-use crate::rpc::{get_handler_key, Payload, Request};
+use crate::rpc::context_handler::{get_handler_key, Payload, Request};
 
 pub struct Proxy {
     transport: Box<dyn Transport>,
