@@ -42,16 +42,19 @@ impl ContextHandler {
 
 
     pub fn dispatch(&self, request_payload: &str) -> String {
-        let p = Payload::from(request_payload);
-        if let Err(msg) = p { return rpc_error(&msg); }
-        let payload = p.unwrap();
-        let x = self.handlers.get(payload.handler_key);
-        match x {
-            None => {
-                let msg1 = format!("dispatch handler not found `{}`", payload.handler_key);
-                rpc_error(&msg1)
+        let payload = Payload::from(request_payload);
+        match payload {
+            Err(msg) => { rpc_error(&msg) }
+            Ok(payload) => {
+                let x = self.handlers.get(payload.handler_key);
+                match x {
+                    None => {
+                        let msg1 = format!("dispatch handler not found `{}`", payload.handler_key);
+                        rpc_error(&msg1)
+                    }
+                    Some(fun) => { fun(payload.json) }
+                }
             }
-            Some(fun) => { fun(payload.json) }
         }
     }
 }
