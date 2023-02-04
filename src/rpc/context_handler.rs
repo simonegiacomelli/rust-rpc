@@ -41,7 +41,7 @@ impl ContextHandler {
 
 
     pub fn dispatch(&self, request_payload: &str) -> String {
-        let p = Payload::from(request_payload);
+        let p = Payload::from(request_payload).unwrap();
         let x = self.handlers.get(p.handler_key).unwrap();
         x(p.json)
     }
@@ -65,14 +65,14 @@ pub struct Payload<'a> {
 }
 
 impl<'a> Payload<'a> {
-    pub fn from(payload: &str) -> Payload {
+    pub fn from(payload: &str) -> Result<Payload, String> {
         let mut s = payload.splitn(2, "\n");
-        let h = s.next().unwrap();
-        let j = s.next().unwrap();
-        Payload {
+        let h = s.next().ok_or("Payload split 1")?;
+        let j = s.next().ok_or("Payload split 2")?;
+        Ok(Payload {
             handler_key: h,
             json: j,
-        }
+        })
     }
 
     pub fn to_string(&self) -> String {

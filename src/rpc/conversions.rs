@@ -14,8 +14,12 @@ pub fn rpc_req_from_str<Req>(payload: &str) -> Result<Req, String>
     let result_req = serde_json::from_str(payload);
     match result_req {
         Ok(req) => { Ok(req) }
-        Err(err) => { Err("success=0\nserde from_str failed".to_string()) }
+        Err(err) => { Err(rpc_error("serde from_str failed")) }
     }
+}
+
+pub fn rpc_error(msg: &str) -> String {
+    return format!("success=0\n{}", msg);
 }
 
 pub fn rpc_res_to_str<Res>(res: &Res) -> String
