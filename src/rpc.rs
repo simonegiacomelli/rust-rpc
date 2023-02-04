@@ -94,3 +94,8 @@ fn rpc_res_to_str<Res>(res: &Res) -> String where Res: ?Sized + Serialize + Dese
     let res_json = serde_json::to_string(&res).unwrap();
     res_json
 }
+
+pub fn rpc_req_to_str<Req>(req: &Req) -> String where Req: ?Sized + Serialize + DeserializeOwned + Debug {
+    let req_json = serde_json::to_string(req).unwrap();
+    req_json
+}
