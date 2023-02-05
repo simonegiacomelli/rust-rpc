@@ -13,9 +13,14 @@ pub struct Handlers {
     handlers: HashMap<String, Box<dyn Fn(&str) -> String>>,
 }
 
-impl Handlers {
+pub struct Handlers2<Ctx> {
+    handlers: HashMap<String, Box<dyn Fn(&str, Ctx) -> String>>,
+}
 
-    pub fn new() -> Handlers { Handlers { handlers: HashMap::new() } }
+impl Handlers {
+    pub fn new() -> Handlers {
+        Handlers { handlers: HashMap::new() }
+    }
 
     /**
     turning points:
@@ -51,6 +56,51 @@ impl Handlers {
                         rpc_error(&msg1)
                     }
                     Some(fun) => { fun(payload.json) }
+                }
+            }
+        }
+    }
+}
+
+impl<Ctx> Handlers2<Ctx> {
+    pub fn new() -> Handlers2<Ctx> {
+        Handlers2 { handlers: HashMap::new() }
+    }
+
+    /**
+    turning points:
+     - https://serde.rs/lifetimes.html vedi DeserializeOwned
+     - https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=6e7942d56b8d29e9b3f90893bd650bfb
+     - e poi una serie di SO che utilizzavano la 'move' sulla lambda
+     */
+    pub fn register<Req, Res>(&mut self, callback: impl Fn(Req) -> Res + 'static)
+        where Req: Request<Res>,
+              Req: ?Sized + Serialize + DeserializeOwned + Debug,
+              Res: ?Sized + Serialize + DeserializeOwned + Debug,
+    {
+        let handler_key = get_handler_key::<Req, Res>();
+        println!("registering=`{handler_key}`");
+        self.handlers.insert(handler_key, Box::new(move |payload, ctx| {
+            let req = conversions::rpc_req_from_str(payload);
+            if let Err(msg) = req { return msg; }
+            let res = callback(req.unwrap());
+            let res_json = conversions::rpc_res_to_str(&res);
+            res_json
+        }));
+    }
+
+    pub fn dispatch(&self, request_payload: &str, ctx: Ctx) -> String {
+        let payload = Payload::from(request_payload);
+        match payload {
+            Err(msg) => { rpc_error(&msg) }
+            Ok(payload) => {
+                let x = self.handlers.get(payload.handler_key);
+                match x {
+                    None => {
+                        let msg1 = format!("dispatch(...) handler not found `{}`", payload.handler_key);
+                        rpc_error(&msg1)
+                    }
+                    Some(fun) => { fun(payload.json, ctx) }
                 }
             }
         }
