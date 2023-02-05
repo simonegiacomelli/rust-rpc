@@ -9,12 +9,13 @@ use crate::rpc::conversions::rpc_error;
 pub trait Request<Req> {}
 
 
-pub struct ContextHandler {
+pub struct Handlers {
     handlers: HashMap<String, Box<dyn Fn(&str) -> String>>,
 }
 
-impl ContextHandler {
-    pub fn new() -> ContextHandler { ContextHandler { handlers: HashMap::new() } }
+impl Handlers {
+
+    pub fn new() -> Handlers { Handlers { handlers: HashMap::new() } }
 
     /**
     turning points:
@@ -37,7 +38,6 @@ impl ContextHandler {
             res_json
         }));
     }
-
 
     pub fn dispatch(&self, request_payload: &str) -> String {
         let payload = Payload::from(request_payload);

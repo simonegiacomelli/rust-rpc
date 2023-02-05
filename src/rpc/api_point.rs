@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
-use crate::rpc::context_handler::Request;
+use crate::rpc::handlers::Request;
 
 
 #[derive(Serialize, Deserialize, Debug)]

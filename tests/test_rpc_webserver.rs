@@ -12,7 +12,7 @@ async fn test() {
         webserver_start(&string, |req, ctx| -> HttpResponse {
             // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
-            let mut context_handler = ContextHandler::new();
+            let mut context_handler = Handlers::new();
             context_handler.register(move |req: MulRequest| -> MulResponse {
                 MulResponse { mulResult: req.a * req.b }
             });
@@ -41,7 +41,7 @@ async fn test() {
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 use rust_rpc::find_port::find_port;
-use rust_rpc::rpc::context_handler::{ContextHandler, Request};
+use rust_rpc::rpc::handlers::{Handlers, Request};
 use rust_rpc::rpc::Proxy;
 use rust_rpc::webserver::HttpResponse;
 use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;

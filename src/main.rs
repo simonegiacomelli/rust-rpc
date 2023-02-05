@@ -4,14 +4,14 @@ use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 
 use rust_rpc::rpc::api_point::{PointRequest, PointResponse};
-use rust_rpc::rpc::context_handler::ContextHandler;
+use rust_rpc::rpc::handlers::Handlers;
 
 
 fn main() {
     let point = PointRequest { x: 1, y: 2 };
     let result = serde_json::to_string(&point).unwrap();
     println!("json=`{}`", result);
-    let mut context_handler = ContextHandler::new();
+    let mut context_handler = Handlers::new();
     context_handler.register(|p: PointRequest| -> PointResponse {
         PointResponse { sum: p.x + p.y }
     });
