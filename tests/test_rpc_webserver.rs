@@ -17,9 +17,9 @@ async fn test() {
                 MulResponse { mulResult: req.a * req.b }
             });
             // todo commentare le prossime tre righe e gestire la decodifica dell'errore lato client (susscess=x)
-            context_handler.register(move |req: AddRequest| -> AddResponse {
-                AddResponse { addResult: req.a + req.b }
-            });
+            // context_handler.register(move |req: AddRequest| -> AddResponse {
+            //     AddResponse { addResult: req.a + req.b }
+            // });
             let res = context_handler.dispatch(&req.content);
             HttpResponse::new(res)
         }).await.unwrap();
@@ -37,8 +37,9 @@ async fn test() {
     assert_eq!(response.mulResult, 42);
 
     let request = AddRequest { a: 6, b: 7 };
-    let response = proxy.send(&request).await.unwrap();
-    assert_eq!(response.addResult, 13);
+    let response = proxy.send(&request).await;
+    assert!(response.is_err());
+    assert!(response.err().unwrap().contains("handler not found"));
 }
 
 use serde::{Deserialize, Serialize};

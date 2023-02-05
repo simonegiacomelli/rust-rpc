@@ -47,7 +47,7 @@ impl ContextHandler {
                 let x = self.handlers.get(payload.handler_key);
                 match x {
                     None => {
-                        let msg1 = format!("dispatch handler not found `{}`", payload.handler_key);
+                        let msg1 = format!("dispatch(...) handler not found `{}`", payload.handler_key);
                         rpc_error(&msg1)
                     }
                     Some(fun) => { fun(payload.json) }
