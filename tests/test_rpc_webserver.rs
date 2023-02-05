@@ -12,7 +12,7 @@ async fn test() {
         webserver_start(&string, |req, ctx| -> HttpResponse {
             // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
-            let mut context_handler = Handlers::new();
+            let mut context_handler = Handlers::<()>::new();
             context_handler.register(move |req: MulRequest| -> MulResponse {
                 MulResponse { mulResult: req.a * req.b }
             });

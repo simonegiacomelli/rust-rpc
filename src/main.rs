@@ -11,7 +11,7 @@ fn main() {
     let point = PointRequest { x: 1, y: 2 };
     let result = serde_json::to_string(&point).unwrap();
     println!("json=`{}`", result);
-    let mut context_handler = Handlers::new();
+    let mut context_handler = Handlers::<()>::new();
     context_handler.register(|p: PointRequest| -> PointResponse {
         PointResponse { sum: p.x + p.y }
     });
@@ -25,7 +25,6 @@ fn main() {
 
     // let result = proxy.send(PointRequest(3,8));
 }
-
 
 
 #[derive(Serialize, Deserialize, Debug)]
