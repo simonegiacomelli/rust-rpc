@@ -12,7 +12,7 @@ fn main() {
     let result = serde_json::to_string(&point).unwrap();
     println!("json=`{}`", result);
     let mut context_handler = Handlers::<()>::new();
-    context_handler.register_ctx(|p: PointRequest, _| -> PointResponse {
+    context_handler.register(|p: PointRequest, _| -> PointResponse {
         PointResponse { sum: p.x + p.y }
     });
 

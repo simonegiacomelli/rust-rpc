@@ -12,25 +12,24 @@ pub trait Request<Req> {}
 
 // todo fix https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
 pub struct Handlers<Ctx> {
-    handlers: HashMap<String, Box<dyn Fn(&str) -> String>>,
-    handlers_ctx: HashMap<String, Box<dyn Fn(&str, Ctx) -> String>>,
+    handlers: HashMap<String, Box<dyn Fn(&str, Ctx) -> String>>,
 }
 
 
 impl<Ctx> Handlers<Ctx> {
     pub fn new() -> Handlers<Ctx> {
-        Handlers { handlers: HashMap::new(), handlers_ctx: HashMap::new() }
+        Handlers { handlers: HashMap::new() }
     }
 
 
-    pub fn register_ctx<Req, Res>(&mut self, callback: impl Fn(Req, Ctx) -> Res + 'static)
+    pub fn register<Req, Res>(&mut self, callback: impl Fn(Req, Ctx) -> Res + 'static)
         where Req: Request<Res>,
               Req: ?Sized + Serialize + DeserializeOwned + Debug,
               Res: ?Sized + Serialize + DeserializeOwned + Debug,
     {
         let handler_key = get_handler_key::<Req, Res>();
         println!("registering=`{handler_key}`");
-        self.handlers_ctx.insert(handler_key, Box::new(move |payload, ctx| {
+        self.handlers.insert(handler_key, Box::new(move |payload, ctx| {
             let req = conversions::rpc_req_from_str(payload);
             if let Err(msg) = req { return msg; }
             let res = callback(req.unwrap(), ctx);
@@ -39,12 +38,12 @@ impl<Ctx> Handlers<Ctx> {
         }));
     }
 
-    pub fn dispatch_ctx(&self, request_payload: &str, ctx: Ctx) -> String {
+    pub fn dispatch(&self, request_payload: &str, ctx: Ctx) -> String {
         let payload = Payload::from(request_payload);
         match payload {
             Err(msg) => { rpc_error(&msg) }
             Ok(payload) => {
-                let x = self.handlers_ctx.get(payload.handler_key);
+                let x = self.handlers.get(payload.handler_key);
                 match x {
                     None => {
                         let msg1 = format!("dispatch(...) handler not found `{}`", payload.handler_key);
