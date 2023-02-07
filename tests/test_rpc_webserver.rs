@@ -56,11 +56,11 @@ async fn test_with_context() {
         webserver_start(&string, |req| -> HttpResponse {
             // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
-            let mut context_handler = Handlers::<()>::new();
-            context_handler.register(move |req: MulRequest| -> MulResponse {
+            let mut context_handler = Handlers::<String>::new();
+            context_handler.register_ctx(move |req: MulRequest, ctx: String| -> MulResponse {
                 MulResponse { mulResult: req.a * req.b }
             });
-            let res = context_handler.dispatch(&req.content);
+            let res = context_handler.dispatch_ctx(&req.content, req.url.to_string());
             HttpResponse::new(res)
         }).await.unwrap();
     });

@@ -61,7 +61,7 @@ impl<Ctx> Handlers<Ctx> {
         }
     }
 
-    pub fn register_ctx<Req, Res>(&mut self, callback: impl Fn(Req) -> Res + 'static)
+    pub fn register_ctx<Req, Res>(&mut self, callback: impl Fn(Req, Ctx) -> Res + 'static)
         where Req: Request<Res>,
               Req: ?Sized + Serialize + DeserializeOwned + Debug,
               Res: ?Sized + Serialize + DeserializeOwned + Debug,
@@ -71,7 +71,7 @@ impl<Ctx> Handlers<Ctx> {
         self.handlers_ctx.insert(handler_key, Box::new(move |payload, ctx| {
             let req = conversions::rpc_req_from_str(payload);
             if let Err(msg) = req { return msg; }
-            let res = callback(req.unwrap());
+            let res = callback(req.unwrap(), ctx);
             let res_json = conversions::rpc_res_to_str(&res);
             res_json
         }));
