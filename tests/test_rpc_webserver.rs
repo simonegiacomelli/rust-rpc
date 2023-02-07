@@ -19,12 +19,17 @@ async fn test_no_context() {
     let port = find_port().unwrap();
     tokio::spawn(async move {
         let string = format!("127.0.0.1:{}", port);
+
+
         webserver_start(&string, |req| -> HttpResponse {
             // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
             let mut context_handler = Handlers::<()>::new();
-            context_handler.register(move |req: MulRequest, _| -> MulResponse {
-                MulResponse { mulResult: req.a * req.b }
+            context_handler.register(move |req: MulRequest, _| -> Result<MulResponse, String> {
+                Ok(MulResponse { mulResult: req.a * req.b })
+            });
+            context_handler.register(move |req: DivRequest, _| -> Result<DivResponse, String> {
+                Err("error1".to_string())
             });
             let res = context_handler.dispatch(&req.content, ());
             HttpResponse::new(res)
@@ -46,6 +51,12 @@ async fn test_no_context() {
     let response = proxy.send(&request).await;
     assert!(response.is_err());
     assert!(response.err().unwrap().contains("handler not found"));
+
+
+    let request = DivRequest { a: 1, b: 2 };
+    let response = proxy.send(&request).await;
+    assert!(response.is_err());
+    assert_eq!(response.err().unwrap(), "error1".to_string());
 }
 
 #[tokio::test]
@@ -57,9 +68,9 @@ async fn test_with_context() {
             // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
             let mut context_handler = Handlers::<String>::new();
-            context_handler.register(move |req: MulRequest, ctx: String| -> MulResponse {
+            context_handler.register(move |req: MulRequest, ctx: String| -> Result<MulResponse, String> {
                 assert_eq!(ctx, "context1");
-                MulResponse { mulResult: req.a * req.b }
+                Ok(MulResponse { mulResult: req.a * req.b })
             });
             let res = context_handler.dispatch(&req.content, "context1".to_string());
             HttpResponse::new(res)
@@ -94,6 +105,19 @@ pub struct MulRequest {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct MulResponse {
     pub mulResult: i32,
+}
+
+impl Request<DivResponse> for DivRequest {}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct DivRequest {
+    pub a: i32,
+    pub b: i32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct DivResponse {
+    pub divResult: i32,
 }
 
 
