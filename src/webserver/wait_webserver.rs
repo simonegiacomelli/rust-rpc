@@ -52,10 +52,6 @@ async fn test_wait() {
     });
     let url = &format!("http://127.0.0.1:{}", port);
     wait_webserver_responsive(url).await;
-    tokio::time::sleep(Duration::new(1, 0)).await;
-    reqwest::get(url).await.unwrap().text().await;
-    tokio::time::sleep(Duration::new(1, 0)).await;
-    // std::thread::sleep(Duration::new(5, 0));
-    let result = 2 + 2;
-    assert_eq!(result, 4);
+    let res = reqwest::get(url).await.unwrap().text().await.unwrap();
+    assert_eq!(res, "no content")
 }
