@@ -1,9 +1,18 @@
 use std::borrow::BorrowMut;
+use std::io::repeat;
 use std::net::TcpListener;
 use std::ops::Range;
+use std::sync::atomic::{AtomicU16, Ordering};
+
+static last_port: AtomicU16 = AtomicU16::new(10000);
+
 
 pub fn find_port() -> Option<u16> {
-    find_port_in(10000..20000)
+    loop {
+        let port = last_port.fetch_add(1, Ordering::SeqCst);
+        if port_is_available(port) { return Some(port); }
+        if port > 20000 { return None; }
+    }
 }
 
 pub fn find_port_in(range: Range<u16>) -> Option<u16> {
@@ -18,3 +27,14 @@ fn port_is_available(port: u16) -> bool {
     }
 }
 
+#[cfg(test)]
+mod test {
+    use crate::find_port::find_port;
+
+    #[test]
+    fn test_no_reuse() {
+        let p1 = find_port().unwrap();
+        let p2 = find_port().unwrap();
+        assert_ne!(p1, p2)
+    }
+}
