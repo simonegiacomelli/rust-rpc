@@ -1,7 +1,9 @@
 use std::collections::HashMap;
-use serde::Serialize;
-use serde::de::DeserializeOwned;
 use std::fmt::Debug;
+
+use serde::de::DeserializeOwned;
+use serde::Serialize;
+
 use crate::rpc;
 use crate::rpc::conversions;
 use crate::rpc::conversions::rpc_error;
@@ -9,14 +11,14 @@ use crate::rpc::conversions::rpc_error;
 pub trait Request<Req> {}
 
 // todo fix https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
-pub struct Handlers<Ctx = ()> {
+pub struct Handlers<Ctx> {
     handlers: HashMap<String, Box<dyn Fn(&str) -> String>>,
     handlers_ctx: HashMap<String, Box<dyn Fn(&str, Ctx) -> String>>,
 }
 
 
 impl<Ctx> Handlers<Ctx> {
-    pub fn new() -> Handlers {
+    pub fn new() -> Handlers<Ctx> {
         Handlers { handlers: HashMap::new(), handlers_ctx: HashMap::new() }
     }
 
