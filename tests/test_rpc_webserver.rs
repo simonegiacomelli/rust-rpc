@@ -15,7 +15,7 @@ use rust_rpc::webserver::tokio_server::webserver_start;
 use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
 
 #[tokio::test]
-async fn test() {
+async fn test_no_context() {
     let port = find_port().unwrap();
     tokio::spawn(async move {
         let string = format!("127.0.0.1:{}", port);
