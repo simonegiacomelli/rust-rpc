@@ -29,13 +29,11 @@ type BoxBody = http_body_util::combinators::BoxBody<Bytes, hyper::Error>;
 type Result<T> = std::result::Result<T, GenericError>;
 
 
-
-
 pub async fn webserver_start(host_port: &str, callback: HttpHandler) -> Result<()> {
     println!("webserver_start");
     let service = service_fn(move |req| web_handler(callback, req));
 
-    pretty_env_logger::init();
+    let ignore = pretty_env_logger::try_init();
 
     let addr: SocketAddr = host_port.parse().unwrap();
     println!("serving on http://{}", addr);

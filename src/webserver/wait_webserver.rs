@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::time::Duration;
+
 use crate::find_port::find_port;
 use crate::webserver::HttpResponse;
 use crate::webserver::tokio_server::webserver_start;
@@ -25,7 +26,7 @@ pub async fn wait_webserver_responsive_times(url: &str, times: usize) -> Result<
         }
         tokio::time::sleep(Duration::from_millis(1)).await;
     }
-    Err(format!("timeout waiting for {}", url))
+    Err(format!("timeout for wait_webserver_responsive_times({},{})", url, times))
 }
 
 #[tokio::test]
@@ -41,7 +42,7 @@ async fn test_wait() {
     let port = find_port().unwrap();
     tokio::spawn(async move {
         let string = format!("127.0.0.1:{}", port);
-        webserver_start(&string, |req, ctx| -> HttpResponse {
+        webserver_start(&string, |req| -> HttpResponse {
             HttpResponse {
                 content: "no content".to_string(),
                 content_type: "text/html".to_string(),
