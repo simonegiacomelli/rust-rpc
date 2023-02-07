@@ -58,9 +58,10 @@ async fn test_with_context() {
             // TODO spostare handler fuori / oppure altra soluzione?
             let mut context_handler = Handlers::<String>::new();
             context_handler.register_ctx(move |req: MulRequest, ctx: String| -> MulResponse {
+                assert_eq!(ctx, "context1");
                 MulResponse { mulResult: req.a * req.b }
             });
-            let res = context_handler.dispatch_ctx(&req.content, req.url.to_string());
+            let res = context_handler.dispatch_ctx(&req.content, "context1".to_string());
             HttpResponse::new(res)
         }).await.unwrap();
     });
