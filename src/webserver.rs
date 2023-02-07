@@ -43,7 +43,5 @@ impl HttpResponse {
     }
 }
 
-pub struct Context {}
 
-
-pub type HttpHandler = fn(HttpRequest, Context) -> HttpResponse;
+pub type HttpHandler = fn(HttpRequest) -> HttpResponse;

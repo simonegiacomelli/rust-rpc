@@ -18,7 +18,7 @@ use hyper::service::service_fn;
 use tokio::net::TcpListener;
 
 use crate::webserver;
-use crate::webserver::{Context, HttpHandler, HttpRequest, HttpResponse};
+use crate::webserver::{HttpHandler, HttpRequest, HttpResponse};
 use crate::webserver::tokio_conversion::to_http_request;
 
 // use crate::read::{self, Fused, Reference};
@@ -57,7 +57,7 @@ pub async fn webserver_start(host_port: &str, callback: HttpHandler) -> Result<(
 
 async fn web_handler(callback: HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
     let http_request = to_http_request(req).await?;
-    let http_response = callback(http_request, Context {});
+    let http_response = callback(http_request);
     webserver::tokio_conversion::to_http_response(http_response)
 }
 

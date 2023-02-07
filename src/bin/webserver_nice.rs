@@ -14,9 +14,9 @@ use http_body_util::{BodyExt, Full};
 use hyper::{body::Incoming as IncomingBody, header, Method, Request, Response, StatusCode};
 use hyper::body::{Body, Incoming};
 use hyper::server::conn::http1;
+
 use rust_rpc::webserver::HttpResponse;
 use rust_rpc::webserver::tokio_server::webserver_start;
-
 
 type GenericError = Box<dyn std::error::Error + Send + Sync>;
 type BoxBody = http_body_util::combinators::BoxBody<Bytes, hyper::Error>;
@@ -25,18 +25,18 @@ type Result<T> = std::result::Result<T, GenericError>;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    webserver_start( "",
-        |req, ctx| -> HttpResponse {
-        println!(" hello !");
-        let content = format!("<h1>from a fn, url: {}</h1>", req.url);
+    webserver_start("",
+                    |req| -> HttpResponse {
+                        println!(" hello !");
+                        let content = format!("<h1>from a fn, url: {}</h1>", req.url);
 
-        HttpResponse {
-            content,
-            content_type: "text/html".to_string(),
-            status: 200,
-            headers: HashMap::new(),
-        }
-    }).await.unwrap();
+                        HttpResponse {
+                            content,
+                            content_type: "text/html".to_string(),
+                            status: 200,
+                            headers: HashMap::new(),
+                        }
+                    }).await.unwrap();
     Ok(())
 }
 

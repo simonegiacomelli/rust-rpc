@@ -1,15 +1,25 @@
 extern crate core;
 
 use std::collections::HashMap;
-use rust_rpc::*;
 
+use serde::{Deserialize, Serialize};
+use serde::de::DeserializeOwned;
+
+use rust_rpc::*;
+use rust_rpc::find_port::find_port;
+use rust_rpc::rpc::handlers::{Handlers, Request};
+use rust_rpc::rpc::Proxy;
+use rust_rpc::webserver::HttpResponse;
+use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;
+use rust_rpc::webserver::tokio_server::webserver_start;
+use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
 
 #[tokio::test]
 async fn test() {
     let port = find_port().unwrap();
     tokio::spawn(async move {
         let string = format!("127.0.0.1:{}", port);
-        webserver_start(&string, |req, ctx| -> HttpResponse {
+        webserver_start(&string, |req| -> HttpResponse {
             // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
             let mut context_handler = Handlers::<()>::new();
@@ -37,17 +47,6 @@ async fn test() {
     assert!(response.is_err());
     assert!(response.err().unwrap().contains("handler not found"));
 }
-
-use serde::{Deserialize, Serialize};
-use serde::de::DeserializeOwned;
-use rust_rpc::find_port::find_port;
-use rust_rpc::rpc::handlers::{Handlers, Request};
-use rust_rpc::rpc::Proxy;
-use rust_rpc::webserver::HttpResponse;
-use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;
-use rust_rpc::webserver::tokio_server::webserver_start;
-use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
-
 
 impl Request<MulResponse> for MulRequest {}
 
