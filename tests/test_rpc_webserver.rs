@@ -59,6 +59,8 @@ async fn test_no_context() {
     assert_eq!(response.err().unwrap(), "error1".to_string());
 }
 
+static context1: &str = "context1";
+
 #[tokio::test]
 async fn test_with_context() {
     let port = find_port().unwrap();
@@ -68,11 +70,12 @@ async fn test_with_context() {
             // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
             let mut context_handler = Handlers::<String>::new();
+
             context_handler.register(move |req: MulRequest, ctx: String| -> Result<MulResponse, String> {
-                assert_eq!(ctx, "context1");
+                assert_eq!(ctx, context1);
                 Ok(MulResponse { mulResult: req.a * req.b })
             });
-            let res = context_handler.dispatch(&req.content, "context1".to_string());
+            let res = context_handler.dispatch(&req.content, context1.to_string());
             HttpResponse::new(res)
         }).await.unwrap();
     });
