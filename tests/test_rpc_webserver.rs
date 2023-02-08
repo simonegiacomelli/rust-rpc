@@ -70,8 +70,7 @@ async fn test_with_context() {
             // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
             let mut context_handler = Handlers::<String>::new();
-
-            context_handler.register(move |req: MulRequest, ctx: String| -> Result<MulResponse, String> {
+            context_handler.register(|req: MulRequest, ctx: String| -> Result<MulResponse, String> {
                 assert_eq!(ctx, context1);
                 Ok(MulResponse { mulResult: req.a * req.b })
             });
