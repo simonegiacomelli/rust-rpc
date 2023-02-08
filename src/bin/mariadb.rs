@@ -25,12 +25,18 @@ FROM anag_aree
     //       0 = false, non-0 = true
     for rec in recs {
         println!(
-            " {} {}",
+            " {} {} {} {}",
             rec.id_azienda,
             &rec.cod_area,
+            type_of(&rec.id_azienda),
+            type_of(&rec.cod_area),
         );
     }
 
     Ok(())
 }
 
+
+fn type_of<T>(_: &T) -> String {
+    format!("{}", std::any::type_name::<T>())
+}
