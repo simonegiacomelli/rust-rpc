@@ -5,10 +5,15 @@ pub fn properties(content: &str) -> HashMap<String, String> {
     let mut result: HashMap<String, String> = HashMap::new();
 
     content.split("\n").for_each(|line| {
-        let mut parts = line.splitn(2, "=");
-        let key = parts.next().unwrap();
-        let value = parts.next().unwrap();
-        result.insert(key.to_string(), value.to_string());
+        if !line.trim().is_empty() {
+            let mut parts = line.splitn(2, "=");
+            let key = parts.next().unwrap();
+            let valueOpt = parts.next();
+            match valueOpt {
+                None => { result.insert(key.to_string(), "".to_string()); }
+                Some(value) => { result.insert(key.to_string(), value.to_string()); }
+            }
+        }
     });
     result
 }
@@ -25,5 +30,31 @@ mod test {
 
         assert_eq!("foo", target["name"]);
         assert_eq!("42", target["age"]);
+    }
+
+    #[test]
+    fn test_empty_lines() {
+        let target = properties("\n\nname=foo\nage=42");
+
+        assert_eq!("foo", target["name"]);
+        assert_eq!("42", target["age"]);
+    }
+
+    #[test]
+    fn test_eq_blank() {
+        let target = properties("name=");
+        assert_eq!("", target["name"]);
+
+        let target = properties("\nname=\n");
+        assert_eq!("", target["name"]);
+    }
+
+    #[test]
+    fn test_without_equal() {
+        let target = properties("name\n\n");
+        assert_eq!("", target["name"]);
+
+        let target = properties("\nname\n");
+        assert_eq!("", target["name"]);
     }
 }
