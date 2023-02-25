@@ -6,7 +6,7 @@ use sqlx::mysql::MySqlPoolOptions;
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
     println!("mariadb");
-    let conn_string = fs::read_to_string("connection_string.txt")?;
+    let conn_string = fs::read_to_string(".env")?;
     let pool = MySqlPoolOptions::new()
         .max_connections(5)
         .connect(&conn_string).await?;

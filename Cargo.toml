@@ -21,3 +21,4 @@ reqwest = { version = "0.11.13", features = ["blocking"] }
 async-trait = "0.1.63"
 
 sqlx = { version = "0.6", features = ["runtime-tokio-native-tls", "mysql", "postgres", "sqlite", "mssql"] }
+# dotenv = "0.15.0"
