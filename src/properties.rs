@@ -7,11 +7,11 @@ pub fn properties(content: &str) -> HashMap<String, String> {
     content.split("\n").for_each(|line| {
         if !line.trim().is_empty() {
             let mut parts = line.splitn(2, "=");
-            let key = parts.next().unwrap();
+            let key = parts.next().unwrap().to_string();
             let valueOpt = parts.next();
             match valueOpt {
-                None => { result.insert(key.to_string(), "".to_string()); }
-                Some(value) => { result.insert(key.to_string(), value.to_string()); }
+                None => { result.insert(key, "".to_string()); }
+                Some(value) => { result.insert(key, value.to_string()); }
             }
         }
     });
