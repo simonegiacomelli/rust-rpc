@@ -3,10 +3,14 @@ use std::fs;
 
 use sqlx::mysql::MySqlPoolOptions;
 
+use rust_rpc::properties::properties;
+
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
     println!("mariadb");
-    let conn_string = fs::read_to_string(".env")?;
+    let env = fs::read_to_string(".env")?;
+    let props = properties(&env);
+    let conn_string = props.get("DATABASE_URL").unwrap();
     let pool = MySqlPoolOptions::new()
         .max_connections(5)
         .connect(&conn_string).await?;
