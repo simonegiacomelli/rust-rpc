@@ -2,22 +2,12 @@ use std::collections::HashMap;
 use std::iter::Map;
 
 pub fn properties(content: &str) -> HashMap<String, String> {
-    fn process_line(line: &str) -> Option<(String, String)> {
-        if line.trim().is_empty() {
-            None
-        } else {
-            let mut parts = line.splitn(2, "=");
-            let key = parts.next().unwrap().to_string();
-            let valueOpt = parts.next();
-            match valueOpt {
-                None => { None }
-                Some(value) => { Some((key, value.to_string())) }
-            }
-        }
-    }
-
     content.replace("\r\n", "\n").split("\n").filter_map(|line| {
-        process_line(line)
+        if line.trim().is_empty() { return None; }
+        let mut parts = line.splitn(2, "=");
+        let key = parts.next().unwrap().to_string();
+        let value = parts.next()?;
+        Some((key, value.to_string()))
     }).into_iter().collect()
 }
 
