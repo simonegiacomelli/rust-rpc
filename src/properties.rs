@@ -2,9 +2,8 @@ use std::collections::HashMap;
 use std::iter::Map;
 
 pub fn properties(content: &str) -> HashMap<String, String> {
-
     fn process_line(line: &str) -> Option<(String, String)> {
-        let tup: Option<(String, String)> = if line.trim().is_empty() {
+        if line.trim().is_empty() {
             None
         } else {
             let mut parts = line.splitn(2, "=");
@@ -14,8 +13,7 @@ pub fn properties(content: &str) -> HashMap<String, String> {
                 None => { None }
                 Some(value) => { Some((key, value.to_string())) }
             }
-        };
-        return tup;
+        }
     }
 
     content.replace("\r\n", "\n").split("\n").filter_map(|line| {
