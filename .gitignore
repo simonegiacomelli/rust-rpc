@@ -1,4 +1,3 @@
 /target
 /Cargo.lock
-connection_string.txt
-.env
+sqlite1.db
