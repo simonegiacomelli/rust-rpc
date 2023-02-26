@@ -4,7 +4,7 @@ use std::iter::Map;
 pub fn properties(content: &str) -> HashMap<String, String> {
     let mut result: HashMap<String, String> = HashMap::new();
 
-    content.split("\n").for_each(|line| {
+    content.replace("\r\n", "\n").split("\n").for_each(|line| {
         if !line.trim().is_empty() {
             let mut parts = line.splitn(2, "=");
             let key = parts.next().unwrap().to_string();
@@ -24,37 +24,57 @@ mod test {
 
     use crate::properties::*;
 
+    fn fix(string: &str, sep: &str) -> String {
+        string.replace("\t", sep)
+    }
+
     #[test]
     fn test() {
-        let target = properties("name=foo\nage=42");
+        fn rt(sep: &str) {
+            let target = properties(&fix("name=foo\tage=42", sep));
 
-        assert_eq!("foo", target["name"]);
-        assert_eq!("42", target["age"]);
+            assert_eq!("foo", target["name"]);
+            assert_eq!("42", target["age"]);
+        }
+        rt("\n");
+        // rt("\r\n");
     }
 
     #[test]
     fn test_empty_lines() {
-        let target = properties("\n\nname=foo\nage=42");
+        fn rt(sep: &str) {
+            let target = properties(&fix("\t\tname=foo\tage=42", sep));
 
-        assert_eq!("foo", target["name"]);
-        assert_eq!("42", target["age"]);
+            assert_eq!("foo", target["name"]);
+            assert_eq!("42", target["age"]);
+        }
+        rt("\n");
+        rt("\r\n");
     }
 
     #[test]
     fn test_eq_blank() {
-        let target = properties("name=");
-        assert_eq!("", target["name"]);
+        fn rt(sep: &str) {
+            let target = properties(&fix("name=", sep));
+            assert_eq!("", target["name"]);
 
-        let target = properties("\nname=\n");
-        assert_eq!("", target["name"]);
+            let target = properties(&fix("\tname=\t", sep));
+            assert_eq!("", target["name"]);
+        }
+        rt("\n");
+        rt("\r\n");
     }
 
     #[test]
     fn test_without_equal() {
-        let target = properties("name\n\n");
-        assert!(!target.contains_key("name"));
+        fn rt(sep: &str) {
+            let target = properties(&fix("name\t\t", sep));
+            assert!(!target.contains_key("name"));
 
-        let target = properties("\nname\n");
-        assert!(!target.contains_key("name"));
+            let target = properties(&fix("\tname\t", sep));
+            assert!(!target.contains_key("name"));
+        }
+        rt("\n");
+        rt("\r\n");
     }
 }
