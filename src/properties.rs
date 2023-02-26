@@ -10,7 +10,7 @@ pub fn properties(content: &str) -> HashMap<String, String> {
             let key = parts.next().unwrap().to_string();
             let valueOpt = parts.next();
             match valueOpt {
-                None => { result.insert(key, "".to_string()); }
+                None => {}
                 Some(value) => { result.insert(key, value.to_string()); }
             }
         }
@@ -52,9 +52,9 @@ mod test {
     #[test]
     fn test_without_equal() {
         let target = properties("name\n\n");
-        assert_eq!("", target["name"]);
+        assert!(!target.contains_key("name"));
 
         let target = properties("\nname\n");
-        assert_eq!("", target["name"]);
+        assert!(!target.contains_key("name"));
     }
 }
