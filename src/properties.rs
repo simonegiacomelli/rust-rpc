@@ -4,18 +4,27 @@ use std::iter::Map;
 pub fn properties(content: &str) -> HashMap<String, String> {
     let mut result: HashMap<String, String> = HashMap::new();
 
-    content.replace("\r\n", "\n").split("\n").for_each(|line| {
-        if !line.trim().is_empty() {
+    fn process_line(line: &str) -> Option<(String, String)> {
+        let tup: Option<(String, String)> = if line.trim().is_empty() {
+            None
+        } else {
             let mut parts = line.splitn(2, "=");
             let key = parts.next().unwrap().to_string();
             let valueOpt = parts.next();
             match valueOpt {
-                None => {}
-                Some(value) => { result.insert(key, value.to_string()); }
+                None => { None }
+                Some(value) => { Some((key, value.to_string())) }
             }
-        }
-    });
-    result
+        };
+        return tup;
+    }
+
+    let x = content.replace("\r\n", "\n").split("\n").filter_map(|line| {
+        process_line(line)
+    }).into_iter().collect();
+
+
+    x
 }
 
 #[cfg(test)]
