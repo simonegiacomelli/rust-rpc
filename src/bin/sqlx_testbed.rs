@@ -2,6 +2,7 @@ use std::any::type_name;
 use std::fs;
 
 use sqlx::mysql::MySqlPoolOptions;
+use sqlx::SqlitePool;
 
 use rust_rpc::properties::properties;
 
@@ -11,7 +12,7 @@ async fn main() -> Result<(), sqlx::Error> {
     let env = fs::read_to_string(".env")?;
     let props = properties(&env);
     let conn_string = props.get("DATABASE_URL").unwrap();
-    let pool = MySqlPoolOptions::new()
+    let pool = SqlitePool::new()
         .max_connections(5)
         .connect(&conn_string).await?;
 
