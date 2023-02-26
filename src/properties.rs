@@ -5,9 +5,7 @@ pub fn properties(content: &str) -> HashMap<String, String> {
     content.replace("\r\n", "\n").split("\n").filter_map(|line| {
         if line.trim().is_empty() { return None; }
         let mut parts = line.splitn(2, "=");
-        let key = parts.next().unwrap().to_string();
-        let value = parts.next()?;
-        Some((key, value.to_string()))
+        Some((parts.next().unwrap().to_string(), parts.next()?.to_string()))
     }).into_iter().collect()
 }
 
