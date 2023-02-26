@@ -27,7 +27,7 @@ mod test {
             assert_eq!("42", target["age"]);
         }
         rt("\n");
-        // rt("\r\n");
+        rt("\r\n");
     }
 
     #[test]
