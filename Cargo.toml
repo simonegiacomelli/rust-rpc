@@ -1,3 +1,7 @@
+[workspace]
+members = ["macro_token"]
+
+
 [package]
 name = "rust-rpc"
 version = "0.1.0"
