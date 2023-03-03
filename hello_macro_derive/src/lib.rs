@@ -7,6 +7,7 @@ use syn;
 pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
     // Construct a representation of Rust code as a syntax tree
     // that we can manipulate
+    dbg!(input.clone());
     let ast = syn::parse(input).unwrap();
 
     // Build the trait implementation
