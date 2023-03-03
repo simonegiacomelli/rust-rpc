@@ -476,7 +476,20 @@ version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "95505c38b4572b2d910cecb0281560f54b440a19336cbbcb27bf6ce6adc6f5a8"
 dependencies = [
- "unicode-segmentation",
+    "unicode-segmentation",
+]
+
+[[package]]
+name = "hello_macro"
+version = "0.1.0"
+
+[[package]]
+name = "hello_macro_derive"
+version = "0.1.0"
+dependencies = [
+    "hello_macro",
+    "quote",
+    "syn",
 ]
 
 [[package]]
@@ -485,7 +498,7 @@ version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
 dependencies = [
- "libc",
+    "libc",
 ]
 
 [[package]]
@@ -757,18 +770,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "macro-token"
-version = "0.1.0"
-dependencies = [
-    "quote",
-    "syn",
-]
-
-[[package]]
 name = "macro-token-client"
 version = "0.1.0"
 dependencies = [
-    "macro-token",
+    "hello_macro",
+    "hello_macro_derive",
     "quote",
     "syn",
 ]

@@ -7,5 +7,6 @@ edition = "2021"
 syn = "1.0"
 quote = "1.0"
 
-# macro_token = { workspace = true }
-macro-token = { path = "../macro_token" }
+
+hello_macro = { path = "../hello_macro" }
+hello_macro_derive = { path = "../hello_macro_derive" }

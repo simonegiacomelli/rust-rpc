@@ -1,5 +1,5 @@
 [package]
-name = "macro-token"
+name = "hello_macro_derive"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,3 +10,4 @@ proc-macro = true
 syn = "1.0"
 quote = "1.0"
 
+hello_macro = { path = "../hello_macro" }
