@@ -1,0 +1,11 @@
+[package]
+name = "macro-token-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+syn = "1.0"
+quote = "1.0"
+
+# macro_token = { workspace = true }
+macro-token = { path = "../macro_token" }

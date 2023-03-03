@@ -1,6 +1,5 @@
 [workspace]
-members = ["macro_token"]
-
+members = ["macro_token", "macro_token_client"]
 
 [package]
 name = "rust-rpc"
