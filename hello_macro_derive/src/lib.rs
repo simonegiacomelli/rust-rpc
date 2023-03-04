@@ -27,3 +27,18 @@ fn impl_hello_macro(ast: &syn::DeriveInput) -> TokenStream {
     };
     gen.into()
 }
+
+
+#[proc_macro]
+pub fn sql(input: TokenStream) -> TokenStream {
+    dbg!("========================== sql! start ===================");
+    dbg!(input.clone());
+    dbg!("========================== sql! end ===================");
+    let stream = quote! {
+         {
+             println!("Hello, sql! macro");
+            5
+         }
+    };
+    stream.into()
+}
