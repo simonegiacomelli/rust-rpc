@@ -5,7 +5,7 @@ fn hello(name: &str) {
 }
 
 fn main() {
-    let m = MyBox::new(String::from("Rust"));
+    let m = MyBox::new(MyBox::new(String::from("Rust")));
     hello(&m);
 }
 
