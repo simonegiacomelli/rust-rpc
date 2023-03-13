@@ -20,7 +20,7 @@ impl<T> MyBox<T> {
 impl<T> Deref for MyBox<T> {
     type Target = T;
 
-    fn deref(&self) -> &Self::Target {
+    fn deref(&self) -> &T {
         &self.0
     }
 }
