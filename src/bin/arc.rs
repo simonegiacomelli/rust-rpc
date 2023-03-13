@@ -5,7 +5,6 @@ use std::thread;
 use tokio::count;
 
 fn main() {
-    let counter2 = Arc::new(HashMap::new());
     let counter = Arc::new(Mutex::new(0));
     let mut handles = vec![];
 
