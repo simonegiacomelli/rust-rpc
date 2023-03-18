@@ -31,13 +31,11 @@ async fn test_no_context() {
     };
 
     let port = find_port().unwrap();
-    tokio::spawn(async move {
-        let string = format!("127.0.0.1:{}", port);
-        webserver_start(&string, callback).await.unwrap();
-    });
-    let url = &format!("http://127.0.0.1:{}", port);
+    let host_port = format!("127.0.0.1:{}", port);
+    let host_port2 = host_port.clone();
+    tokio::spawn(async move { webserver_start(&host_port2, callback).await.unwrap(); });
+    let url = &format!("http://{}", host_port);
     wait_webserver_responsive(url).await;
-
 
     let url = url.to_string();
     let http_transport = HttpReqwestTransport { url };
