@@ -16,25 +16,23 @@ use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
 
 #[tokio::test]
 async fn test_no_context() {
+    let callback: fn(HttpRequest) -> HttpResponse = |req| -> HttpResponse {
+        // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
+        // TODO spostare handler fuori / oppure altra soluzione?
+        let mut context_handler = Handlers::<()>::new();
+        context_handler.register(move |req: MulRequest, _| -> Result<MulResponse, String> {
+            Ok(MulResponse { mulResult: req.a * req.b })
+        });
+        context_handler.register(move |req: DivRequest, _| -> Result<DivResponse, String> {
+            Err("error1".to_string())
+        });
+        let res = context_handler.dispatch(&req.content, ());
+        HttpResponse::new(res)
+    };
 
     let port = find_port().unwrap();
     tokio::spawn(async move {
         let string = format!("127.0.0.1:{}", port);
-
-
-        let callback: fn(HttpRequest) -> HttpResponse = |req| -> HttpResponse {
-            // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
-            // TODO spostare handler fuori / oppure altra soluzione?
-            let mut context_handler = Handlers::<()>::new();
-            context_handler.register(move |req: MulRequest, _| -> Result<MulResponse, String> {
-                Ok(MulResponse { mulResult: req.a * req.b })
-            });
-            context_handler.register(move |req: DivRequest, _| -> Result<DivResponse, String> {
-                Err("error1".to_string())
-            });
-            let res = context_handler.dispatch(&req.content, ());
-            HttpResponse::new(res)
-        };
         webserver_start(&string, callback).await.unwrap();
     });
     let url = &format!("http://127.0.0.1:{}", port);
