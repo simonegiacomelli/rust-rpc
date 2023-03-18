@@ -16,12 +16,13 @@ use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
 
 #[tokio::test]
 async fn test_no_context() {
+
     let port = find_port().unwrap();
     tokio::spawn(async move {
         let string = format!("127.0.0.1:{}", port);
 
 
-        webserver_start(&string, |req| -> HttpResponse {
+        let callback: fn(HttpRequest) -> HttpResponse = |req| -> HttpResponse {
             // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
             // TODO spostare handler fuori / oppure altra soluzione?
             let mut context_handler = Handlers::<()>::new();
@@ -33,7 +34,8 @@ async fn test_no_context() {
             });
             let res = context_handler.dispatch(&req.content, ());
             HttpResponse::new(res)
-        }).await.unwrap();
+        };
+        webserver_start(&string, callback).await.unwrap();
     });
     let url = &format!("http://127.0.0.1:{}", port);
     wait_webserver_responsive(url).await;
