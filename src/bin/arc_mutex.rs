@@ -1,21 +1,19 @@
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Duration;
 
 use tokio::count;
 
 fn main() {
-    let counter = Arc::new(42);
+    let counter = Arc::new(Mutex::new(0));
     let mut handles = vec![];
 
-    for i in 0..10 {
+    for _ in 0..10 {
         let counter = Arc::clone(&counter);
         let handle = thread::spawn(move || {
-            let num = counter;
-            println!("i={} counter={} before", i, num);
-            thread::sleep(Duration::from_millis(1000));
-            println!("i={} counter={} after", i, num);
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
         });
         handles.push(handle);
     }
@@ -24,5 +22,5 @@ fn main() {
         handle.join().unwrap();
     }
 
-    println!("Result: {}", counter);
+    println!("Result: {}", *counter.lock().unwrap());
 }
