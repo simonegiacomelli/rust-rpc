@@ -106,22 +106,6 @@ async fn test_with_context() {
     assert!(response.err().unwrap().contains("handler not found"));
 }
 
-pub async fn webserver_start2(callback: impl Fn(HttpRequest) -> HttpResponse) {}
-
-#[tokio::test]
-async fn test_with_context2() {
-    tokio::spawn(async move {
-        webserver_start2(|req| -> HttpResponse {
-            let mut context_handler = Handlers::<String>::new();
-            context_handler.register(|req: MulRequest, ctx: String| -> Result<MulResponse, String> {
-                Err("just testing".to_string())
-            });
-            let res = context_handler.dispatch(&req.content, context1.to_string());
-            HttpResponse::new(res)
-        }).await;
-    });
-}
-
 impl Request<MulResponse> for MulRequest {}
 
 #[derive(Serialize, Deserialize, Debug)]
