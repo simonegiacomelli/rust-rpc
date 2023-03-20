@@ -15,6 +15,16 @@ use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;
 use rust_rpc::webserver::tokio_server::webserver_start_arc;
 use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
 
+struct TcpPort {
+    port: u16,
+}
+
+impl TcpPort {
+    fn new() -> TcpPort { TcpPort { port: find_port().unwrap() } }
+    fn host_port(&self) -> String { format!("127.0.0.1:{}", self.port) }
+    fn url(&self) -> String { format!("http://{}", self.host_port()) }
+}
+
 #[tokio::test]
 async fn test_no_context() {
     let mut context_handler = Handlers::<()>::new();
@@ -30,19 +40,16 @@ async fn test_no_context() {
         HttpResponse::new(res)
     };
 
-    let port = find_port().unwrap();
-    let host_port = format!("127.0.0.1:{}", port);
-    let host_port2 = host_port.clone();
+    let tcp_port = TcpPort::new();
+    let host_port = tcp_port.host_port();
 
     tokio::spawn(async move {
-        webserver_start_arc(&host_port2, Arc::new(callback)).await.unwrap();
+        webserver_start_arc(&host_port, Arc::new(callback)).await.unwrap();
     });
 
-    let url = &format!("http://{}", host_port);
-    wait_webserver_responsive(url).await;
+    wait_webserver_responsive(&tcp_port.url()).await;
 
-    let url = url.to_string();
-    let http_transport = HttpReqwestTransport { url };
+    let http_transport = HttpReqwestTransport { url: tcp_port.url() };
     let proxy = Proxy::new(http_transport);
 
     let request = MulRequest { a: 6, b: 7 };
@@ -65,21 +72,19 @@ static context1: &str = "context1";
 
 #[tokio::test]
 async fn test_with_context() {
-    let port = find_port().unwrap();
+    let mut context_handler = Handlers::<String>::new();
+    context_handler.register(|req: MulRequest, ctx: String| -> Result<MulResponse, String> {
+        assert_eq!(ctx, context1);
+        Ok(MulResponse { mulResult: req.a * req.b })
+    });
 
     let callback = move |req: HttpRequest| -> HttpResponse {
-        // if req.method == "GET" { return HttpResponse::new2("GET method not supported"); }
-        // TODO spostare handler fuori / oppure altra soluzione?
-        let mut context_handler = Handlers::<String>::new();
-        context_handler.register(|req: MulRequest, ctx: String| -> Result<MulResponse, String> {
-            assert_eq!(ctx, context1);
-            Ok(MulResponse { mulResult: req.a * req.b })
-        });
         let res = context_handler.dispatch(&req.content, context1.to_string());
         HttpResponse::new(res)
     };
     let callback = Arc::new(callback);
 
+    let port = find_port().unwrap();
     tokio::spawn(async move {
         let string = format!("127.0.0.1:{}", port);
         webserver_start_arc(&string, callback).await.unwrap();
