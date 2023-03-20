@@ -23,6 +23,7 @@ impl TcpPort {
     fn new() -> TcpPort { TcpPort { port: find_port().unwrap() } }
     fn host_port(&self) -> String { format!("127.0.0.1:{}", self.port) }
     fn url(&self) -> String { format!("http://{}", self.host_port()) }
+    async fn wait_webserver_responsive(&self) { wait_webserver_responsive(&self.url()).await; }
 }
 
 #[tokio::test]
@@ -44,7 +45,7 @@ async fn test_no_context() {
         webserver_start_arc(&host_port, callback).await.unwrap();
     });
 
-    wait_webserver_responsive(&tcp_port.url()).await;
+    tcp_port.wait_webserver_responsive().await;
 
     let http_transport = HttpReqwestTransport { url: tcp_port.url() };
     let proxy = Proxy::new(http_transport);
@@ -84,8 +85,7 @@ async fn test_with_context() {
         webserver_start_arc(&host_port, callback).await.unwrap();
     });
 
-    wait_webserver_responsive(&tcp_port.url()).await;
-
+    tcp_port.wait_webserver_responsive().await;
 
     let http_transport = HttpReqwestTransport { url: tcp_port.url() };
     let proxy = Proxy::new(http_transport);
