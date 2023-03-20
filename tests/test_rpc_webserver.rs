@@ -83,11 +83,7 @@ async fn test_with_context() {
         Ok(MulResponse { mulResult: req.a * req.b })
     });
 
-    let callback = move |req: HttpRequest| -> HttpResponse {
-        let res = context_handler.dispatch(&req.content, context1.to_string());
-        HttpResponse::new(res)
-    };
-    let callback = Arc::new(callback);
+    let callback = context_handler.http_adapter(|req| { context1.to_string() });
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();

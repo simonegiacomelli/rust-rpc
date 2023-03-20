@@ -1,11 +1,14 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
+use std::sync::Arc;
+use std::task::Context;
 
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use crate::rpc::conversions;
 use crate::rpc::conversions::rpc_error;
+use crate::webserver::{HttpHandler, HttpRequest, HttpResponse};
 
 pub trait Request<Req> {}
 
@@ -15,11 +18,16 @@ pub struct Handlers<Ctx> {
 }
 
 
-impl<Ctx> Handlers<Ctx> {
+impl<Ctx: 'static> Handlers<Ctx> {
     pub fn new() -> Handlers<Ctx> {
         Handlers { handlers: HashMap::new() }
     }
 
+    pub fn http_adapter(self, context_generator: fn(&HttpRequest) -> Ctx) -> HttpHandler {
+        Arc::new(move |req: HttpRequest| -> HttpResponse {
+            HttpResponse::new(self.dispatch(&req.content, context_generator(&req)))
+        })
+    }
 
     pub fn register<Req, Res>(&mut self, callback: impl Fn(Req, Ctx) -> Result<Res, String> + Send + Sync + 'static)
         where Req: Request<Res>,
