@@ -30,11 +30,11 @@ type GenericError = Box<dyn std::error::Error + Send + Sync>;
 type BoxBody = http_body_util::combinators::BoxBody<Bytes, hyper::Error>;
 type Result<T> = std::result::Result<T, GenericError>;
 
-pub async fn webserver_start(host_port: &str, callback: fn(HttpRequest) -> HttpResponse) -> Result<()> {
-    webserver_start_arc(host_port, Arc::new(callback)).await
+pub async fn webserver_start(host_port: &str, http_handler: fn(HttpRequest) -> HttpResponse) -> Result<()> {
+    webserver_start_arc(host_port, Arc::new(http_handler)).await
 }
 
-pub async fn webserver_start_arc(host_port: &str, callback: HttpHandler) -> Result<()> {
+pub async fn webserver_start_arc(host_port: &str, http_handler: HttpHandler) -> Result<()> {
     println!("webserver_start");
 
     let ignore = pretty_env_logger::try_init();
@@ -45,7 +45,7 @@ pub async fn webserver_start_arc(host_port: &str, callback: HttpHandler) -> Resu
 
     loop {
         let (stream, _) = listener.accept().await?;
-        let callback_clone = Arc::clone(&callback);
+        let callback_clone = Arc::clone(&http_handler);
 
         tokio::task::spawn(async move {
             let callback_ref = &callback_clone;
@@ -61,9 +61,9 @@ pub async fn webserver_start_arc(host_port: &str, callback: HttpHandler) -> Resu
     }
 }
 
-async fn web_handler(callback: &HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
+async fn web_handler(http_handler: &HttpHandler, req: Request<IncomingBody>) -> Result<Response<BoxBody>> {
     let http_request = to_http_request(req).await?;
-    let http_response = callback(http_request);
+    let http_response = http_handler(http_request);
     webserver::tokio_conversion::to_http_response(http_response)
 }
 

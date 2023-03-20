@@ -37,13 +37,13 @@ async fn test_no_context() {
         Err("error1".to_string())
     });
 
-    let callback = context_handler.new_http_dispatcher(|req| ());
+    let http_dispatcher = context_handler.new_http_dispatcher(|req| ());
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();
 
     tokio::spawn(async move {
-        webserver_start_arc(&host_port, callback).await.unwrap();
+        webserver_start_arc(&host_port, http_dispatcher).await.unwrap();
     });
 
     tcp_port.wait_webserver_responsive().await;
