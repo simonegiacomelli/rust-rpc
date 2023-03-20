@@ -35,7 +35,7 @@ async fn test_no_context() {
         Err("error1".to_string())
     });
 
-    let callback = new_p(context_handler);
+    let callback = context_handler.http_adapter(|req| ());
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();
@@ -65,13 +65,6 @@ async fn test_no_context() {
     assert_eq!(response.err().unwrap(), "error1".to_string());
 }
 
-fn new_p(mut context_handler: Handlers<()>) -> HttpHandler {
-    let callback = Arc::new(move |req: HttpRequest| -> HttpResponse {
-        let res = context_handler.dispatch(&req.content, ());
-        HttpResponse::new(res)
-    });
-    callback
-}
 
 static context1: &str = "context1";
 
