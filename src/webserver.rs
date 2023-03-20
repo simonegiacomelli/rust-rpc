@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::iter::Map;
+use std::sync::Arc;
 
 pub mod tokio_conversion;
 pub mod tokio_server;
@@ -44,4 +45,4 @@ impl HttpResponse {
 }
 
 
-pub type HttpHandler = fn(HttpRequest) -> HttpResponse;
+pub type HttpHandler = Arc<dyn Fn(HttpRequest) -> HttpResponse + Send + Sync>;

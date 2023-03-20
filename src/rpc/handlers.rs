@@ -4,7 +4,6 @@ use std::fmt::Debug;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use crate::rpc;
 use crate::rpc::conversions;
 use crate::rpc::conversions::rpc_error;
 
@@ -12,7 +11,7 @@ pub trait Request<Req> {}
 
 // todo fix https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
 pub struct Handlers<Ctx> {
-    handlers: HashMap<String, Box<dyn Fn(&str, Ctx) -> String>>,
+    handlers: HashMap<String, Box<dyn Fn(&str, Ctx) -> String + Send + Sync>>,
 }
 
 
@@ -22,7 +21,7 @@ impl<Ctx> Handlers<Ctx> {
     }
 
 
-    pub fn register<Req, Res>(&mut self, callback: impl Fn(Req, Ctx) -> Result<Res, String> + 'static)
+    pub fn register<Req, Res>(&mut self, callback: impl Fn(Req, Ctx) -> Result<Res, String> + Send + Sync + 'static)
         where Req: Request<Res>,
               Req: ?Sized + Serialize + DeserializeOwned + Debug,
               Res: ?Sized + Serialize + DeserializeOwned + Debug,
