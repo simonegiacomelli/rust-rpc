@@ -37,7 +37,7 @@ async fn test_no_context() {
         Err("error1".to_string())
     });
 
-    let callback = context_handler.http_adapter(|req| ());
+    let callback = context_handler.new_http_dispatcher(|req| ());
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();
@@ -78,12 +78,12 @@ async fn test_with_context() {
         Ok(MulResponse { mulResult: req.a * req.b })
     });
 
-    let callback = context_handler.http_adapter(|req| { context1.to_string() });
+    let http_dispatcher = context_handler.new_http_dispatcher(|req| { context1.to_string() });
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();
     tokio::spawn(async move {
-        webserver_start_arc(&host_port, callback).await.unwrap();
+        webserver_start_arc(&host_port, http_dispatcher).await.unwrap();
     });
 
     tcp_port.wait_webserver_responsive().await;
