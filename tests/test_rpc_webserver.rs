@@ -10,7 +10,7 @@ use rust_rpc::*;
 use rust_rpc::find_port::find_port;
 use rust_rpc::rpc::handlers::{Handlers, Request};
 use rust_rpc::rpc::Proxy;
-use rust_rpc::webserver::{HttpRequest, HttpResponse};
+use rust_rpc::webserver::{HttpHandler, HttpRequest, HttpResponse};
 use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;
 use rust_rpc::webserver::tokio_server::webserver_start_arc;
 use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;
@@ -35,10 +35,7 @@ async fn test_no_context() {
         Err("error1".to_string())
     });
 
-    let callback = Arc::new(move |req: HttpRequest| -> HttpResponse {
-        let res = context_handler.dispatch(&req.content, ());
-        HttpResponse::new(res)
-    });
+    let callback = new_p(context_handler);
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();
@@ -66,6 +63,14 @@ async fn test_no_context() {
     let response = proxy.send(&request).await;
     assert!(response.is_err());
     assert_eq!(response.err().unwrap(), "error1".to_string());
+}
+
+fn new_p(mut context_handler: Handlers<()>) -> HttpHandler {
+    let callback = Arc::new(move |req: HttpRequest| -> HttpResponse {
+        let res = context_handler.dispatch(&req.content, ());
+        HttpResponse::new(res)
+    });
+    callback
 }
 
 static context1: &str = "context1";
