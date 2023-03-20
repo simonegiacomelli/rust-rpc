@@ -27,21 +27,17 @@ impl Proxy {
     pub async fn send<Req: ReqResBound, Res: ReqResBound>(&self, req: &Req) -> Result<Res, String>
         where Req: Request<Res>,
     {
-        let handler_key = get_handler_key::<Req>();
-        let req_json = conversions::rpc_req_to_str(req);
-        let payload = Payload { handler_key: handler_key.as_str(), json: req_json.as_str() };
-        let req_payload = payload.to_string();
+        let req_payload = self.request_to_payload(req);
         let res_payload = self.transport.send(&req_payload).await;
-        println!("res_payload={}", res_payload);
         let res = conversions::rpc_res_from_str(&res_payload);
         res
     }
 
-    // fn request_to_payload<Req>(&self, req: &Req) -> String {
-    //     let handler_key = get_handler_key::<Req>();
-    //     let req_json = conversions::rpc_req_to_str(req);
-    //     let payload = Payload { handler_key: handler_key.as_str(), json: req_json.as_str() };
-    //     let req_payload = payload.to_string();
-    //     req_payload
-    // }
+    fn request_to_payload<Req: ReqResBound>(&self, req: &Req) -> String {
+        let handler_key = get_handler_key::<Req>();
+        let req_json = conversions::rpc_req_to_str(req);
+        let payload = Payload { handler_key: handler_key.as_str(), json: req_json.as_str() };
+        let req_payload = payload.to_string();
+        req_payload
+    }
 }
