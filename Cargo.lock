@@ -1272,17 +1272,17 @@ dependencies = [
 name = "rust-rpc"
 version = "0.1.0"
 dependencies = [
-    "async-trait",
-    "bytes",
-    "http-body-util",
-    "hyper 1.0.0-rc.2",
-    "pretty_env_logger",
-    "reqwest",
-    "serde",
-    "serde_json",
-    "sqlx",
-    "tokio",
-    "trait-set",
+ "async-trait",
+ "bytes",
+ "http-body-util",
+ "hyper 1.0.0-rc.2",
+ "pretty_env_logger",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tokio",
+ "trait-set",
 ]
 
 [[package]]
@@ -1739,7 +1739,7 @@ version = "0.1.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "24eb03ba0eab1fd845050058ce5e616558e8f8d8fca633e6b163fe25c797213a"
 dependencies = [
-    "once_cell",
+ "once_cell",
 ]
 
 [[package]]
@@ -1748,9 +1748,9 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b79e2e9c9ab44c6d7c20d5976961b47e8f49ac199154daa514b77cd1ab536625"
 dependencies = [
-    "proc-macro2",
-    "quote",
-    "syn",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]

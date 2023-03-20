@@ -3,15 +3,10 @@ use std::fmt::Debug;
 use async_trait::async_trait;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use trait_set::trait_set;
 
 use crate::rpc;
-use crate::rpc::{conversions, get_handler_key};
+use crate::rpc::{conversions, get_handler_key, ReqResBound};
 use crate::rpc::handlers::{Payload, Request};
-
-trait_set! {
-    pub trait ReqResBound = Serialize + DeserializeOwned + Debug ;
-}
 
 pub struct Proxy {
     transport: Box<dyn Transport>,

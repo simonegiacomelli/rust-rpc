@@ -6,7 +6,7 @@ use std::task::Context;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use crate::rpc::{conversions, get_handler_key};
+use crate::rpc::{conversions, get_handler_key, ReqResBound};
 use crate::rpc::conversions::rpc_error;
 use crate::webserver::{HttpHandler, HttpRequest, HttpResponse};
 
@@ -29,10 +29,8 @@ impl<Ctx: 'static> Handlers<Ctx> {
         })
     }
 
-    pub fn register<Req, Res>(&mut self, callback: impl Fn(Req, Ctx) -> Result<Res, String> + Send + Sync + 'static)
-        where Req: Request<Res>,
-              Req: ?Sized + Serialize + DeserializeOwned + Debug,
-              Res: ?Sized + Serialize + DeserializeOwned + Debug,
+    pub fn register<Req: ReqResBound, Res: ReqResBound>(&mut self, callback: impl Fn(Req, Ctx) -> Result<Res, String> + Send + Sync + 'static)
+        where Req: Request<Res>
     {
         let handler_key = get_handler_key::<Req>();
         println!("registering=`{handler_key}`");
