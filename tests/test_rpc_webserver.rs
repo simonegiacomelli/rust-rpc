@@ -84,17 +84,16 @@ async fn test_with_context() {
     };
     let callback = Arc::new(callback);
 
-    let port = find_port().unwrap();
+    let tcp_port = TcpPort::new();
+    let host_port = tcp_port.host_port();
     tokio::spawn(async move {
-        let string = format!("127.0.0.1:{}", port);
-        webserver_start_arc(&string, callback).await.unwrap();
+        webserver_start_arc(&host_port, callback).await.unwrap();
     });
-    let url = &format!("http://127.0.0.1:{}", port);
-    wait_webserver_responsive(url).await;
+
+    wait_webserver_responsive(&tcp_port.url()).await;
 
 
-    let url = url.to_string();
-    let http_transport = HttpReqwestTransport { url };
+    let http_transport = HttpReqwestTransport { url: tcp_port.url() };
     let proxy = Proxy::new(http_transport);
 
     let request = MulRequest { a: 6, b: 7 };
