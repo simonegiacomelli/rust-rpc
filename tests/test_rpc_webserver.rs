@@ -24,6 +24,7 @@ impl TcpPort {
     fn host_port(&self) -> String { format!("127.0.0.1:{}", self.port) }
     fn url(&self) -> String { format!("http://{}", self.host_port()) }
     async fn wait_webserver_responsive(&self) { wait_webserver_responsive(&self.url()).await; }
+    fn new_http_transport(&self) -> HttpReqwestTransport { HttpReqwestTransport { url: self.url() } }
 }
 
 #[tokio::test]
@@ -47,7 +48,7 @@ async fn test_no_context() {
 
     tcp_port.wait_webserver_responsive().await;
 
-    let http_transport = HttpReqwestTransport { url: tcp_port.url() };
+    let http_transport = tcp_port.new_http_transport();
     let proxy = Proxy::new(http_transport);
 
     let request = MulRequest { a: 6, b: 7 };
@@ -87,7 +88,7 @@ async fn test_with_context() {
 
     tcp_port.wait_webserver_responsive().await;
 
-    let http_transport = HttpReqwestTransport { url: tcp_port.url() };
+    let http_transport = tcp_port.new_http_transport();
     let proxy = Proxy::new(http_transport);
 
     let request = MulRequest { a: 6, b: 7 };
