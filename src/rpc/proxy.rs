@@ -5,8 +5,8 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use crate::rpc;
-use crate::rpc::conversions;
-use crate::rpc::handlers::{get_handler_key, Payload, Request};
+use crate::rpc::{conversions, get_handler_key};
+use crate::rpc::handlers::{Payload, Request};
 
 pub struct Proxy {
     transport: Box<dyn Transport>,

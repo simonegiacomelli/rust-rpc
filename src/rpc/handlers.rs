@@ -6,7 +6,7 @@ use std::task::Context;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use crate::rpc::conversions;
+use crate::rpc::{conversions, get_handler_key};
 use crate::rpc::conversions::rpc_error;
 use crate::webserver::{HttpHandler, HttpRequest, HttpResponse};
 
@@ -64,9 +64,6 @@ impl<Ctx: 'static> Handlers<Ctx> {
         }
     }
 }
-
-
-pub fn get_handler_key<Req>() -> String { std::any::type_name::<Req>().to_string() }
 
 
 pub struct Payload<'a> {
