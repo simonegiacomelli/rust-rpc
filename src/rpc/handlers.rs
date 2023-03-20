@@ -23,7 +23,7 @@ impl<Ctx: 'static> Handlers<Ctx> {
         Handlers { handlers: HashMap::new() }
     }
 
-    pub fn new_http_dispatcher(self, context_generator: fn(&HttpRequest) -> Ctx) -> HttpHandler {
+    pub fn new_http_handler(self, context_generator: fn(&HttpRequest) -> Ctx) -> HttpHandler {
         Arc::new(move |req: HttpRequest| -> HttpResponse {
             HttpResponse::new(self.dispatch(&req.content, context_generator(&req)))
         })

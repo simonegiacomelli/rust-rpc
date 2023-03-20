@@ -29,21 +29,21 @@ impl TcpPort {
 
 #[tokio::test]
 async fn test_no_context() {
-    let mut context_handler = Handlers::<()>::new();
-    context_handler.register(move |req: MulRequest, _| -> Result<MulResponse, String> {
+    let mut handlers = Handlers::<()>::new();
+    handlers.register(move |req: MulRequest, _| -> Result<MulResponse, String> {
         Ok(MulResponse { mulResult: req.a * req.b })
     });
-    context_handler.register(move |req: DivRequest, _| -> Result<DivResponse, String> {
+    handlers.register(move |req: DivRequest, _| -> Result<DivResponse, String> {
         Err("error1".to_string())
     });
 
-    let http_dispatcher = context_handler.new_http_dispatcher(|req| ());
+    let http_handler = handlers.new_http_handler(|req| ());
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();
 
     tokio::spawn(async move {
-        webserver_start_arc(&host_port, http_dispatcher).await.unwrap();
+        webserver_start_arc(&host_port, http_handler).await.unwrap();
     });
 
     tcp_port.wait_webserver_responsive().await;
@@ -72,18 +72,18 @@ static context1: &str = "context1";
 
 #[tokio::test]
 async fn test_with_context() {
-    let mut context_handler = Handlers::<String>::new();
-    context_handler.register(|req: MulRequest, ctx: String| -> Result<MulResponse, String> {
+    let mut handlers = Handlers::<String>::new();
+    handlers.register(|req: MulRequest, ctx: String| -> Result<MulResponse, String> {
         assert_eq!(ctx, context1);
         Ok(MulResponse { mulResult: req.a * req.b })
     });
 
-    let http_dispatcher = context_handler.new_http_dispatcher(|req| { context1.to_string() });
+    let http_handler = handlers.new_http_handler(|req| { context1.to_string() });
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();
     tokio::spawn(async move {
-        webserver_start_arc(&host_port, http_dispatcher).await.unwrap();
+        webserver_start_arc(&host_port, http_handler).await.unwrap();
     });
 
     tcp_port.wait_webserver_responsive().await;
