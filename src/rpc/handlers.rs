@@ -34,7 +34,7 @@ impl<Ctx: 'static> Handlers<Ctx> {
               Req: ?Sized + Serialize + DeserializeOwned + Debug,
               Res: ?Sized + Serialize + DeserializeOwned + Debug,
     {
-        let handler_key = get_handler_key::<Req, Res>();
+        let handler_key = get_handler_key::<Req>();
         println!("registering=`{handler_key}`");
         self.handlers.insert(handler_key, Box::new(move |payload, ctx| {
             let req = conversions::rpc_req_from_str(payload);
@@ -66,15 +66,7 @@ impl<Ctx: 'static> Handlers<Ctx> {
 }
 
 
-pub fn get_handler_key<Req, Res>() -> String
-    where Req: Request<Res>,
-{
-    let req_name = std::any::type_name::<Req>();
-    let res_name = std::any::type_name::<Res>();
-
-    let key = format!("{req_name}-{res_name}");
-    key
-}
+pub fn get_handler_key<Req>() -> String { std::any::type_name::<Req>().to_string() }
 
 
 pub struct Payload<'a> {

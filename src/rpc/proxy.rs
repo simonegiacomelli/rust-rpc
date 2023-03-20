@@ -1,10 +1,12 @@
 use std::fmt::Debug;
+
+use async_trait::async_trait;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-use async_trait::async_trait;
+
 use crate::rpc;
-use crate::rpc::handlers::{get_handler_key, Payload, Request};
 use crate::rpc::conversions;
+use crate::rpc::handlers::{get_handler_key, Payload, Request};
 
 pub struct Proxy {
     transport: Box<dyn Transport>,
@@ -27,7 +29,7 @@ impl Proxy {
               Req: ?Sized + Serialize + DeserializeOwned + Debug,
               Res: ?Sized + Serialize + DeserializeOwned + Debug,
     {
-        let handler_key = get_handler_key::<Req, Res>();
+        let handler_key = get_handler_key::<Req>();
         let req_json = conversions::rpc_req_to_str(req);
         let payload = Payload { handler_key: handler_key.as_str(), json: req_json.as_str() };
         let req_payload = payload.to_string();
