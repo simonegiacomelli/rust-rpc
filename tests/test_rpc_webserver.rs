@@ -35,16 +35,16 @@ async fn test_no_context() {
         Err("error1".to_string())
     });
 
-    let callback = move |req: HttpRequest| -> HttpResponse {
+    let callback = Arc::new(move |req: HttpRequest| -> HttpResponse {
         let res = context_handler.dispatch(&req.content, ());
         HttpResponse::new(res)
-    };
+    });
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();
 
     tokio::spawn(async move {
-        webserver_start_arc(&host_port, Arc::new(callback)).await.unwrap();
+        webserver_start_arc(&host_port, callback).await.unwrap();
     });
 
     wait_webserver_responsive(&tcp_port.url()).await;
