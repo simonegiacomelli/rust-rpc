@@ -82,9 +82,7 @@ async fn test_with_context() {
 
     let tcp_port = TcpPort::new();
     let host_port = tcp_port.host_port();
-    tokio::spawn(async move {
-        webserver_start_arc(&host_port, http_handler).await.unwrap();
-    });
+    tokio::spawn(async move { webserver_start_arc(&host_port, http_handler).await.unwrap(); });
 
     tcp_port.wait_webserver_responsive().await;
 
