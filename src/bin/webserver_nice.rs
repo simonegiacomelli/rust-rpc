@@ -15,10 +15,10 @@ use hyper::{body::Incoming as IncomingBody, header, Method, Request, Response, S
 use hyper::body::{Body, Incoming};
 use hyper::server::conn::http1;
 
-use rust_rpc::rpc::http::HttpResponse;
+use rpc_api::rpc::http::HttpResponse;
 use rust_rpc::webserver::tokio_server::webserver_start;
 
-type GenericError = Box<dyn std::error::Error + Send + Sync>;
+type GenericError = Box<dyn Error + Send + Sync>;
 type BoxBody = http_body_util::combinators::BoxBody<Bytes, hyper::Error>;
 type Result<T> = std::result::Result<T, GenericError>;
 

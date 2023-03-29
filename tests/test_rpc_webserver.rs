@@ -6,11 +6,10 @@ use std::sync::Arc;
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 
+use rpc_api::rpc::handlers::{Handlers, Request};
+use rpc_api::rpc::Proxy;
 use rust_rpc::*;
 use rust_rpc::find_port::find_port;
-use rust_rpc::rpc::handlers::{Handlers, Request};
-use rust_rpc::rpc::http::{HttpHandler, HttpRequest, HttpResponse};
-use rust_rpc::rpc::Proxy;
 use rust_rpc::webserver::reqwest_transport::HttpReqwestTransport;
 use rust_rpc::webserver::tokio_server::webserver_start_arc;
 use rust_rpc::webserver::wait_webserver::wait_webserver_responsive;

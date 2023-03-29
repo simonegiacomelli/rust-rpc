@@ -15,8 +15,7 @@ use hyper::server::conn::http1;
 use hyper::service::service_fn;
 use tokio::net::TcpListener;
 
-use crate::rpc::http::HttpRequest;
-use crate::rpc::http::HttpResponse;
+use rpc_api::rpc::http::{HttpRequest, HttpResponse};
 
 // use crate::read::{self, Fused, Reference};
 
