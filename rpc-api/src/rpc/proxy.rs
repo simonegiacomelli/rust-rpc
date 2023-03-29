@@ -1,9 +1,8 @@
 use std::fmt::Debug;
 
+use async_trait::async_trait;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
-
-use async_trait::async_trait;
 
 use crate::rpc;
 use crate::rpc::{conversions, get_handler_key, ReqResBound};

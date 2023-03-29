@@ -1285,8 +1285,10 @@ dependencies = [
 name = "rpc-api"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "serde",
  "serde_json",
+ "trait-set",
 ]
 
 [[package]]
@@ -1319,6 +1321,7 @@ dependencies = [
  "hyper 1.0.0-rc.2",
  "pretty_env_logger",
  "reqwest",
+ "rpc-api",
  "serde",
  "serde_json",
  "sqlx",
