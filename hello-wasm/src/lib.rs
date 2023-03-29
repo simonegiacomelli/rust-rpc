@@ -15,5 +15,9 @@ extern {
 
 #[wasm_bindgen]
 pub fn greet() {
-    alert("Hello, hello-wasm!");
+    alert(&get_string());
+}
+
+pub fn get_string() -> String {
+    "Hello, hello-wasm!".to_string()
 }
