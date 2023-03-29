@@ -1,5 +1,7 @@
 use wasm_bindgen::prelude::*;
 
+use rpc_api::rpc::rpc_version;
+
 mod utils;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -19,5 +21,5 @@ pub fn greet() {
 }
 
 pub fn get_string() -> String {
-    "Hello, hello-wasm!".to_string()
+    format!("rpc-lib version {}", rpc_version())
 }
