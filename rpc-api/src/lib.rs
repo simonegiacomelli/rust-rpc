@@ -1,3 +1,5 @@
+pub mod rpc;
+
 pub fn rpc_api_add(left: usize, right: usize) -> usize {
     left + right
 }

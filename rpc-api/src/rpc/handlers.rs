@@ -8,7 +8,7 @@ use serde::Serialize;
 
 use crate::rpc::{conversions, get_handler_key, ReqResBound};
 use crate::rpc::conversions::rpc_error;
-use crate::rpc::http::{HttpHandler, HttpRequest, HttpResponse};
+use crate::webserver::{HttpHandler, HttpRequest, HttpResponse};
 
 pub trait Request<Req> {}
 

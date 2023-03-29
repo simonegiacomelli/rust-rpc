@@ -19,8 +19,8 @@ use hyper::service::service_fn;
 use tokio::net::TcpListener;
 use tokio::sync::Mutex;
 
+use crate::rpc::http::{HttpHandler, HttpRequest, HttpResponse};
 use crate::webserver;
-use crate::webserver::{HttpHandler, HttpRequest, HttpResponse};
 use crate::webserver::tokio_conversion::to_http_request;
 
 // use crate::read::{self, Fused, Reference};

@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::time::Duration;
 
 use crate::find_port::find_port;
-use crate::webserver::HttpResponse;
+use crate::rpc::http::HttpResponse;
 use crate::webserver::tokio_server::webserver_start;
 
 pub async fn wait_webserver_responsive(url: &str) {

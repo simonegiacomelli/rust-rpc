@@ -15,7 +15,7 @@ use hyper::{body::Incoming as IncomingBody, header, Method, Request, Response, S
 use hyper::body::{Body, Incoming};
 use hyper::server::conn::http1;
 
-use rust_rpc::webserver::HttpResponse;
+use rust_rpc::rpc::http::HttpResponse;
 use rust_rpc::webserver::tokio_server::webserver_start;
 
 type GenericError = Box<dyn std::error::Error + Send + Sync>;
