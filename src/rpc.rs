@@ -7,7 +7,6 @@ use trait_set::trait_set;
 pub use proxy::Proxy;
 pub use proxy::Transport;
 
-pub mod api_point;
 pub mod handlers;
 pub mod conversions;
 pub mod http;
