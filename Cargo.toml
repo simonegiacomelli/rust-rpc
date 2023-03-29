@@ -1,5 +1,5 @@
 [workspace]
-members = ["hello_macro_derive", "hello_macro_client"]
+members = ["hello_macro_derive", "hello_macro_client", "hello-wasm"]
 
 [package]
 name = "rust-rpc"
