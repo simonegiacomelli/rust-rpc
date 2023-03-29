@@ -8,6 +8,8 @@
       <sourceFolder url="file://$MODULE_DIR$/hello_macro/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/hello_macro_client/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/hello_macro_derive/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hello-wasm/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/hello-wasm/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
