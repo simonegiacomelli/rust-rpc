@@ -1,3 +1,6 @@
+use serde::{Deserialize, Serialize};
+use serde::de::DeserializeOwned;
+
 use rpc_api::rpc::handlers::Request;
 
 pub fn add(left: usize, right: usize) -> usize {
