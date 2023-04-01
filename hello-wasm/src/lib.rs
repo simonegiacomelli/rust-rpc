@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 
+use hello_common::MulRequest;
 use rpc_api::rpc::rpc_version;
 
 mod utils;
@@ -22,4 +23,8 @@ pub fn greet() {
 
 pub fn get_string() -> String {
     format!("rpc-lib version {}", rpc_version())
+}
+
+fn ciccio() {
+    MulRequest { a: 20, b: 22 };
 }
