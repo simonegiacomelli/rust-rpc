@@ -25,6 +25,16 @@ pub fn get_string() -> String {
     format!("rpc-lib version {}", rpc_version())
 }
 
-fn ciccio() {
+#[wasm_bindgen]
+pub fn ciccio2() {}
+
+#[wasm_bindgen]
+pub async fn ciccio() {
     MulRequest { a: 20, b: 22 };
+    let x = reqwest::Client::new();
+    // x.get("http://localhost:6666".to_string()).aw;
+    let result = x.get("http://httpbin.org/ip".to_string()).send().await.unwrap();
+    let text = result.text().await.unwrap();
+    println!("{}", text);
+    alert(&text);
 }
