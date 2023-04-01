@@ -492,18 +492,25 @@ version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "95505c38b4572b2d910cecb0281560f54b440a19336cbbcb27bf6ce6adc6f5a8"
 dependencies = [
- "unicode-segmentation",
+    "unicode-segmentation",
+]
+
+[[package]]
+name = "hello-common"
+version = "0.1.0"
+dependencies = [
+    "rpc-api",
 ]
 
 [[package]]
 name = "hello-wasm"
 version = "0.1.0"
 dependencies = [
- "console_error_panic_hook",
- "rpc-api",
- "wasm-bindgen",
- "wasm-bindgen-test",
- "wee_alloc",
+    "console_error_panic_hook",
+    "rpc-api",
+    "wasm-bindgen",
+    "wasm-bindgen-test",
+    "wee_alloc",
 ]
 
 [[package]]
