@@ -12,7 +12,6 @@ use crate::rpc::http::{HttpHandler, HttpRequest, HttpResponse};
 
 pub trait Request<Req> {}
 
-// todo fix https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
 pub struct Handlers<Ctx> {
     handlers: HashMap<String, Box<dyn Fn(&str, Ctx) -> String + Send + Sync>>,
 }
