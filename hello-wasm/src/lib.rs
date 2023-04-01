@@ -1,7 +1,8 @@
 use wasm_bindgen::prelude::*;
 
 use hello_common::MulRequest;
-use rpc_api::rpc::rpc_version;
+use rpc_api::rpc::{Proxy, rpc_version};
+use rpc_api::rpc::reqwest_transport::HttpReqwestTransport;
 
 mod utils;
 
@@ -37,4 +38,13 @@ pub async fn ciccio() {
     let text = result.text().await.unwrap();
     println!("{}", text);
     alert(&text);
+}
+
+// #[wasm_bindgen]
+pub async fn rpc_mul(a: i32, b: i32) -> i32 {
+    let http_transport = HttpReqwestTransport { url: "http://localhost:6666".to_string() };
+    let proxy = Proxy::new(http_transport);
+
+    let resp = proxy.send(&MulRequest { a, b }).await;
+    resp.unwrap().mulResult
 }
