@@ -11,6 +11,7 @@ pub mod handlers;
 pub mod conversions;
 pub mod http;
 mod proxy;
+pub mod reqwest_transport;
 
 fn get_handler_key<Req>() -> String { std::any::type_name::<Req>().to_string() }
 

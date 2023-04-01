@@ -1303,10 +1303,11 @@ dependencies = [
 name = "rpc-api"
 version = "0.1.0"
 dependencies = [
- "async-trait",
- "serde",
- "serde_json",
- "trait-set",
+    "async-trait",
+    "reqwest",
+    "serde",
+    "serde_json",
+    "trait-set",
 ]
 
 [[package]]

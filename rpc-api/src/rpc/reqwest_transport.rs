@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 
-use rpc_api::rpc::Transport;
+use crate::rpc::Transport;
 
 pub struct HttpReqwestTransport {
     pub url: String,
