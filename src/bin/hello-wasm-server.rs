@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 use tokio::time::sleep;
 
+use hello_common::{MulRequest, MulResponse};
 use rpc_api::rpc::handlers::{Handlers, Request};
 use rust_rpc::g_result::GResult;
 use rust_rpc::webserver::tokio_server::webserver_start_arc;
@@ -25,18 +26,4 @@ async fn main() {
     tokio::spawn(async move { webserver_start_arc(&host_port, http_handler).await.unwrap(); });
 
     loop { sleep(Duration::from_millis(10000)).await; }
-}
-
-
-impl Request<MulResponse> for MulRequest {}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct MulRequest {
-    pub a: i32,
-    pub b: i32,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct MulResponse {
-    pub mulResult: i32,
 }
