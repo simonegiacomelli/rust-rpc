@@ -175,10 +175,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Cargo.clean" />
-        <item itemvalue="Cargo.clean" />
-        <item itemvalue="Cargo.Run sqlx_testbed" />
         <item itemvalue="Cargo.build" />
-        <item itemvalue="Cargo.Run hello-server" />
+        <item itemvalue="Cargo.clean" />
+        <item itemvalue="Cargo.clean" />
+        <item itemvalue="Cargo.clean" />
       </list>
     </recent_temporary>
   </component>

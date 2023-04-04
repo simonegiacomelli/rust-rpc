@@ -1,9 +1,2 @@
 [workspace]
 members = ["rpc-api", "rpc-api-server", "hello-common", "hello-server", "hello_macro_derive", "hello_macro_client", "hello-wasm"]
-
-[package]
-name = "rust-rpc"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
