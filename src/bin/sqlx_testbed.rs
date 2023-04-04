@@ -4,8 +4,8 @@ use std::fs;
 use sqlx::migrate::Migrator;
 use sqlx::mysql::MySqlPoolOptions;
 use sqlx::SqlitePool;
+use rpc_api::rpc::properties::properties;
 
-use rust_rpc::properties::properties;
 
 static MIGRATOR: Migrator = sqlx::migrate!();
 
