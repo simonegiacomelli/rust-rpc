@@ -24,7 +24,7 @@ impl HttpResponse {
             content,
             content_type: "plain/text".to_string(),
             status: 200,
-            headers: HashMap::new(),
+            headers: HashMap::from([("Access-Control-Allow-Origin".to_string(), "*".to_string())]),
         }
     }
     pub fn new2(content: &str) -> HttpResponse {

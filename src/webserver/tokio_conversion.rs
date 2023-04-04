@@ -56,9 +56,13 @@ fn get_content_type(req: &Request<Incoming>) -> String {
 }
 
 pub fn to_http_response(http_response: HttpResponse) -> Result<Response<BoxBody>> {
-    let response = Response::builder()
+    let mut builder = Response::builder()
         .status(StatusCode::from_u16(http_response.status)?)
-        .header(header::CONTENT_TYPE, http_response.content_type)
+        .header(header::CONTENT_TYPE, http_response.content_type);
+    for item in  http_response.headers.into_iter(){
+        builder = builder.header(item.0,item.1);
+    }
+    let response = builder
         .body(full(http_response.content))?;
     Ok(response)
 }

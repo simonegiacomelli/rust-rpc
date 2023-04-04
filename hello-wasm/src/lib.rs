@@ -40,9 +40,9 @@ pub async fn ciccio() {
     alert(&text);
 }
 
-// #[wasm_bindgen]
+#[wasm_bindgen]
 pub async fn rpc_mul(a: i32, b: i32) -> i32 {
-    let http_transport = HttpReqwestTransport { url: "http://localhost:6666".to_string() };
+    let http_transport = HttpReqwestTransport { url: "http://localhost:1234".to_string() };
     let proxy = Proxy::new(http_transport);
 
     // todo build-and-run.sh da errore sul Transport
