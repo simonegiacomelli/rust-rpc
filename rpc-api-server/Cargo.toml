@@ -1,21 +1,15 @@
-[workspace]
-members = ["rpc-api", "rpc-api-server", "hello-common", "hello-server", "hello_macro_derive", "hello_macro_client", "hello-wasm"]
-
 [package]
-name = "rust-rpc"
+name = "rpc-api-server"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# rpc library
+rpc-api = { path = "../rpc-api" }
 serde = { version = "1.0.152", features = ["derive"] }
 serde_json = "1.0.91"
-rpc-api = { path = "rpc-api" }
-hello-common = { path = "hello-common" }
-#
-# user library
+
 bytes = "1"
 hyper = { version = "1.0.0-rc.2", features = ["full"] }
 tokio = { version = "1", features = ["full"] }
@@ -24,8 +18,3 @@ pretty_env_logger = "0.4"
 
 reqwest = { version = "0.11.13" }
 async-trait = "0.1.63"
-
-sqlx = { version = "0.6", features = ["runtime-tokio-native-tls", "mysql", "postgres", "sqlite", "mssql"] }
-# dotenv = "0.15.0"
-
-trait-set = { }
