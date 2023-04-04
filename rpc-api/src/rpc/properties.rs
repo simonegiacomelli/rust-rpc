@@ -12,7 +12,7 @@ pub fn properties(content: &str) -> HashMap<String, String> {
 mod test {
     use std::iter::Map;
 
-    use crate::properties::*;
+    use crate::rpc::properties::properties;
 
     fn fix(string: &str, sep: &str) -> String {
         string.replace("\t", sep)
