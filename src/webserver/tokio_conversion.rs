@@ -32,7 +32,7 @@ pub async fn to_http_request(req: Request<Incoming>) -> Result<HttpRequest> {
     let mut rdr = collected.aggregate().reader();
     // let mut body = Vec::new();
     let mut content = String::new();
-    let body_size = rdr.read_to_string(&mut content)?;
+    let _ = rdr.read_to_string(&mut content)?;
     let http_request = HttpRequest {
         method,
         content,
