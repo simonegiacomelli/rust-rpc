@@ -13,7 +13,7 @@ pub struct Proxy {
 }
 
 
-#[async_trait]
+#[async_trait(?Send)]
 pub trait Transport {
     async fn send(&self, payload: &str) -> String;
 }

@@ -6,7 +6,7 @@ pub struct HttpReqwestTransport {
     pub url: String,
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl Transport for HttpReqwestTransport {
     async fn send(&self, payload: &str) -> String {
         let client = reqwest::Client::new();
