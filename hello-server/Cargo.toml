@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 rpc-api = { path = "../rpc-api" }
+rpc-api-server = { path = "../rpc-api-server" }
 hello-common = { path = "../hello-common" }
 serde = { version = "1.0.152", features = ["derive"] }
 serde_json = "1.0.91"

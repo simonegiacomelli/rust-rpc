@@ -502,6 +502,7 @@ version = "0.1.0"
 dependencies = [
  "hello-common",
  "rpc-api",
+ "rpc-api-server",
  "serde",
  "serde_json",
  "tokio",
@@ -1303,30 +1304,30 @@ dependencies = [
 name = "rpc-api"
 version = "0.1.0"
 dependencies = [
-    "async-trait",
-    "http-body-util",
-    "hyper 1.0.0-rc.2",
-    "reqwest",
-    "serde",
-    "serde_json",
-    "tokio",
-    "trait-set",
+ "async-trait",
+ "http-body-util",
+ "hyper 1.0.0-rc.2",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+ "trait-set",
 ]
 
 [[package]]
 name = "rpc-api-server"
 version = "0.1.0"
 dependencies = [
-    "async-trait",
-    "bytes",
-    "http-body-util",
-    "hyper 1.0.0-rc.2",
-    "pretty_env_logger",
-    "reqwest",
-    "rpc-api",
-    "serde",
-    "serde_json",
-    "tokio",
+ "async-trait",
+ "bytes",
+ "http-body-util",
+ "hyper 1.0.0-rc.2",
+ "pretty_env_logger",
+ "reqwest",
+ "rpc-api",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
@@ -1335,9 +1336,9 @@ version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4cf22754c49613d2b3b119f0e5d46e34a2c628a937e3024b8762de4e7d8c710b"
 dependencies = [
-    "byteorder",
-    "digest",
-    "num-bigint-dig",
+ "byteorder",
+ "digest",
+ "num-bigint-dig",
  "num-integer",
  "num-iter",
  "num-traits",
