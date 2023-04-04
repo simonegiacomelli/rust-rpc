@@ -1,2 +1,2 @@
 [workspace]
-members = ["rpc-api", "rpc-api-server", "hello-common", "hello-server", "hello_macro_derive", "hello_macro_client", "hello-wasm"]
+members = ["rpc-api", "rpc-api-server", "hello-common", "hello-server", "hello-wasm"]
