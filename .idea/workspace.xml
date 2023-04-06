@@ -10,17 +10,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7401b88a-9cce-431d-a992-17d7b6ba3e74" name="Changes" comment="removed empty root project">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hello_macro/Cargo.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hello_macro/src/lib.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hello_macro_client/Cargo.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hello_macro_client/src/main.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hello_macro_derive/Cargo.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/hello_macro_derive/src/lib.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/001_anag_aree.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/002_anag_aree.sql" beforeDir="false" />
+    <list default="true" id="7401b88a-9cce-431d-a992-17d7b6ba3e74" name="Changes" comment="Cargo.lock">
+      <change beforePath="$PROJECT_DIR$/rpc-api/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/rpc-api/Cargo.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +197,7 @@
       <updated>1680633777368</updated>
       <workItem from="1680633778742" duration="57000" />
       <workItem from="1680633841821" duration="21000" />
-      <workItem from="1680633869388" duration="6469000" />
+      <workItem from="1680633869388" duration="10371000" />
     </task>
     <task id="LOCAL-00001" summary="checkpoint">
       <created>1680634275686</created>
@@ -278,7 +269,28 @@
       <option name="project" value="LOCAL" />
       <updated>1680639989482</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="cleaning">
+      <created>1680640344761</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1680640344761</updated>
+    </task>
+    <task id="LOCAL-00012" summary="cleaning">
+      <created>1680640349341</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1680640349341</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Cargo.lock">
+      <created>1680640527999</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1680640527999</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,7 +302,9 @@
     <MESSAGE value="remove all old bin" />
     <MESSAGE value="checkpoint" />
     <MESSAGE value="removed empty root project" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed empty root project" />
+    <MESSAGE value="cleaning" />
+    <MESSAGE value="Cargo.lock" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cargo.lock" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
 </project>
